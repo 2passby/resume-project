@@ -1,19 +1,27 @@
-import type { ResumeData } from "../../types";
+import type { ResumeData, ResumeStyle } from "../../types";
 import { SectionTitle } from "./SectionTitle";
 
 interface SkillsProps {
   skills: ResumeData["skills"];
   title: string;
   isVisible: boolean;
+  styleId: ResumeStyle;
 }
 
-export function Skills({ skills, title, isVisible }: SkillsProps) {
+export function Skills({ skills, title, isVisible, styleId }: SkillsProps) {
   if (!isVisible || skills.length === 0) return null;
+
+  const listClassName =
+    styleId === "minimal"
+      ? "mt-3 space-y-2 pl-0 text-[13px] leading-relaxed text-slate-800"
+      : styleId === "editorial"
+        ? "mt-4 space-y-2.5 pl-0 text-[13px] leading-relaxed text-slate-800"
+        : "mt-3 space-y-1.5 pl-0 px-2 text-[13px] leading-relaxed text-gray-800";
 
   return (
     <div className="mb-6">
-      <SectionTitle title={title} subtitle="TECH STACK" />
-      <ul className="list-none pl-0 text-[13px] space-y-1.5 leading-relaxed text-gray-800 px-2 mt-3">
+      <SectionTitle title={title} subtitle="TECH STACK" styleId={styleId} />
+      <ul className={listClassName}>
         {skills.map((skill) => (
           <li key={skill.id} className="flex items-start">
             <span

@@ -4,10 +4,13 @@ import Preview from "./components/Preview";
 import type { ResumeData } from "./types";
 import { defaultResumeData } from "./types";
 import { useReactToPrint } from "react-to-print";
-import { ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronUp, ChevronDown, Minus, Plus } from "lucide-react";
 import { storage } from "./utils";
 
 const STORAGE_KEY = "resume_data";
+const MIN_PREVIEW_SCALE = 0.6;
+const MAX_PREVIEW_SCALE = 1.0;
+const PREVIEW_SCALE_STEP = 0.1;
 
 function App() {
   const [data, setData] = useState<ResumeData>(() => {
@@ -27,6 +30,7 @@ function App() {
   const componentRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [previewScale, setPreviewScale] = useState(1);
 
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
@@ -56,6 +60,22 @@ function App() {
     return () => observer.disconnect();
   }, [currentPage]);
 
+  const handleScaleChange = (direction: "in" | "out") => {
+    setPreviewScale((prev) => {
+      if (direction === "in") {
+        return Math.min(
+          MAX_PREVIEW_SCALE,
+          Math.round((prev + PREVIEW_SCALE_STEP) * 10) / 10
+        );
+      }
+
+      return Math.max(
+        MIN_PREVIEW_SCALE,
+        Math.round((prev - PREVIEW_SCALE_STEP) * 10) / 10
+      );
+    });
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-transparent">
       <div className="w-[430px] xl:w-[470px] flex-shrink-0 h-full overflow-y-auto z-10 px-4 py-4">
@@ -64,36 +84,64 @@ function App() {
 
       <div className="flex-1 flex justify-center items-start overflow-y-auto px-8 py-10 relative">
         <div className="relative flex items-start gap-6">
-          {totalPages > 1 && (
-            <div className="sticky top-10 flex flex-col items-center gap-4 rounded-[28px] border border-white/70 bg-white/85 p-3 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm z-10">
+          <div className="sticky top-10 flex flex-col items-center gap-4 rounded-[28px] border border-white/70 bg-white/85 p-3 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm z-10">
+            <div className="flex flex-col items-center gap-2">
               <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
+                onClick={() => handleScaleChange("in")}
+                disabled={previewScale === MAX_PREVIEW_SCALE}
                 className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
-                title="上一页"
+                title="放大"
               >
-                <ChevronUp size={24} />
+                <Plus size={20} />
               </button>
-              <div className="flex flex-col items-center space-y-1 font-bold text-slate-700">
-                <span className="text-lg">{currentPage}</span>
-                <span className="w-full border-t border-slate-200 pt-1 text-center text-xs text-slate-400">
-                  {totalPages}
-                </span>
+              <div className="min-w-[58px] rounded-2xl bg-primary/6 px-3 py-2 text-center text-xs font-bold text-slate-700">
+                {Math.round(previewScale * 100)}%
               </div>
               <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
-                }
-                disabled={currentPage === totalPages}
+                onClick={() => handleScaleChange("out")}
+                disabled={previewScale === MIN_PREVIEW_SCALE}
                 className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
-                title="下一页"
+                title="缩小"
               >
-                <ChevronDown size={24} />
+                <Minus size={20} />
               </button>
             </div>
-          )}
 
-          <div className="w-[800px] transform-gpu scale-[0.9] origin-top flex-shrink-0">
+            {totalPages > 1 && (
+              <>
+                <div className="h-px w-full bg-slate-200" />
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
+                  title="上一页"
+                >
+                  <ChevronUp size={24} />
+                </button>
+                <div className="flex flex-col items-center space-y-1 font-bold text-slate-700">
+                  <span className="text-lg">{currentPage}</span>
+                  <span className="w-full border-t border-slate-200 pt-1 text-center text-xs text-slate-400">
+                    {totalPages}
+                  </span>
+                </div>
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
+                  title="下一页"
+                >
+                  <ChevronDown size={24} />
+                </button>
+              </>
+            )}
+          </div>
+
+          <div
+            className="w-[800px] transform-gpu origin-top flex-shrink-0 transition-transform duration-200"
+            style={{ transform: `scale(${previewScale})` }}
+          >
             <div className="relative h-[1131px] w-[800px] overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
               <div
                 style={{

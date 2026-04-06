@@ -34,7 +34,10 @@ export interface Honor {
   name: string;
 }
 
+export type ResumeStyle = "modern" | "minimal" | "editorial";
+
 export interface ThemeConfig {
+  styleId: ResumeStyle;
   primaryColor: string;
   highlightColor: string;
   detailFontSize: string;
@@ -158,10 +161,11 @@ export const defaultResumeData: ResumeData = {
     },
   ],
   theme: {
-    primaryColor: "#0ea5e9",
-    highlightColor: "#f0f9ff",
+    styleId: "modern",
+    primaryColor: "#3b82f6",
+    highlightColor: "#eff6ff",
     detailFontSize: "13px",
-    detailColor: "#1f2937", // text-gray-800
+    detailColor: "#334155",
   },
   visible: {
     basicInfo: true,

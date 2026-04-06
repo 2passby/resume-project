@@ -1,34 +1,64 @@
-import type { ResumeData } from "../../types";
+import type { ResumeData, ResumeStyle } from "../../types";
 import { SectionTitle } from "./SectionTitle";
 
 interface ExperiencesProps {
   experiences: ResumeData["experiences"];
   title: string;
   isVisible: boolean;
+  styleId: ResumeStyle;
 }
 
 export function Experiences({
   experiences,
   title,
   isVisible,
+  styleId,
 }: ExperiencesProps) {
   if (!isVisible || experiences.length === 0) return null;
 
+  const headerClassName =
+    styleId === "minimal"
+      ? "mb-2 flex items-baseline justify-between border-b border-slate-200 px-1 pb-2"
+      : styleId === "editorial"
+        ? "mb-2 flex items-baseline justify-between rounded-2xl px-3 py-2"
+        : "mb-1.5 flex items-baseline justify-between rounded-sm px-2 py-1";
+  const headerStyle =
+    styleId === "modern" || styleId === "editorial"
+      ? ({ backgroundColor: "var(--color-highlight)" } as React.CSSProperties)
+      : undefined;
+  const companyClassName =
+    styleId === "minimal"
+      ? "flex-1 text-center text-[15px] font-semibold text-slate-900"
+      : "flex-1 text-center text-[15px] font-bold";
+  const descriptionClassName =
+    styleId === "editorial"
+      ? "mb-2 px-1 text-[13px] font-medium leading-relaxed text-slate-700"
+      : "mb-1.5 px-2 text-[13px] font-medium text-gray-800";
+  const listClassName =
+    styleId === "minimal"
+      ? "space-y-1.5 pl-0"
+      : "space-y-1 pl-0 px-2";
+  const chipClassName =
+    styleId === "minimal"
+      ? "rounded-full border border-slate-200 px-2 py-0.5 text-[12px]"
+      : "rounded px-1.5 py-0.5 text-[12px]";
+
   return (
     <div className="mb-6">
-      <SectionTitle title={title} subtitle="INTERNSHIP EXPERIENCE" />
+      <SectionTitle
+        title={title}
+        subtitle="INTERNSHIP EXPERIENCE"
+        styleId={styleId}
+      />
       <div className="space-y-5">
         {experiences.map((exp) => (
           <div key={exp.id} className="break-inside-avoid">
-            <div
-              className="flex justify-between items-baseline mb-1.5 px-2 py-1 rounded-sm"
-              style={{ backgroundColor: "var(--color-highlight)" }}
-            >
+            <div className={headerClassName} style={headerStyle}>
               <span className="text-[13px] text-gray-500 font-medium">
                 {exp.timePeriod}
               </span>
               <span
-                className="text-[15px] font-bold flex-1 text-center"
+                className={companyClassName}
                 style={{ color: "var(--color-primary)" }}
               >
                 {exp.company}
@@ -37,11 +67,11 @@ export function Experiences({
                 {exp.role}
               </span>
             </div>
-            <div className="text-[13px] font-medium text-gray-800 mb-1.5 px-2">
+            <div className={descriptionClassName}>
               {exp.description}
             </div>
             <ul
-              className="list-none pl-0 space-y-1 leading-relaxed px-2"
+              className={listClassName}
               style={{
                 fontSize: "var(--detail-font-size)",
                 color: "var(--detail-color)",
@@ -66,7 +96,7 @@ export function Experiences({
                   {exp.technologies.map((tech, idx) => (
                     <span
                       key={idx}
-                      className="px-1.5 py-0.5 rounded text-[12px]"
+                      className={chipClassName}
                       style={{
                         color: "var(--color-primary)",
                         backgroundColor: "var(--color-highlight)",

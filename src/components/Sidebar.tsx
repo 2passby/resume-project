@@ -31,6 +31,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { resumeStylePresets } from "../resumeStylePresets";
 
 interface SidebarProps {
   data: ResumeData;
@@ -369,6 +370,21 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     setData((prev) => ({
       ...prev,
       theme: { ...prev.theme, [field]: value },
+    }));
+  };
+
+  const handleStylePresetChange = (
+    presetId: (typeof resumeStylePresets)[number]["id"]
+  ) => {
+    const preset = resumeStylePresets.find((item) => item.id === presetId);
+    if (!preset) return;
+
+    setData((prev) => ({
+      ...prev,
+      theme: {
+        ...prev.theme,
+        ...preset.theme,
+      },
     }));
   };
 
@@ -1048,7 +1064,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 Dong's Resume
               </h1>
               <p className="max-w-xs text-sm leading-6 text-slate-500">
-                更快整理经历，实时预览效果，左侧编辑区保持轻盈且现代的工作台体验。
+                更快整理经历，实时预览效果，全新的简历体验
               </p>
             </div>
           </div>
@@ -1306,19 +1322,54 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         <div className="mt-2 rounded-[28px] border border-white/80 bg-white/88 px-5 py-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm">
           <h3 className="mb-4 text-lg font-bold text-slate-800">主题配置</h3>
           <div className="flex flex-col gap-4 text-sm text-slate-600">
+            <div className="flex flex-col gap-3">
+              <span className="font-medium text-slate-700">简历风格</span>
+              <div className="grid grid-cols-3 gap-3">
+                {resumeStylePresets.map((preset) => {
+                  const isActive = data.theme?.styleId === preset.id;
+
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      onClick={() => handleStylePresetChange(preset.id)}
+                      className={`rounded-[20px] border px-3 py-3 text-left transition ${
+                        isActive
+                          ? "border-primary/35 bg-primary/8 shadow-[0_12px_24px_rgba(59,130,246,0.08)]"
+                          : "border-slate-200 bg-white hover:border-primary/20 hover:bg-slate-50"
+                      }`}
+                    >
+                      <div className="mb-2 flex items-center gap-2">
+                        <span
+                          className="h-3 w-3 rounded-full"
+                          style={{ backgroundColor: preset.theme.primaryColor }}
+                        />
+                        <span className="text-sm font-semibold text-slate-800">
+                          {preset.label}
+                        </span>
+                      </div>
+                      <div className="text-xs leading-5 text-slate-500">
+                        {preset.description}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="flex items-center gap-4">
               <span className="w-20">主题色调</span>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
-                  value={data.theme?.primaryColor || "#0ea5e9"}
+                  value={data.theme?.primaryColor || "#3b82f6"}
                   onChange={(e) =>
                     handleThemeChange("primaryColor", e.target.value)
                   }
                   className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
                 <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
-                  {data.theme?.primaryColor || "#0ea5e9"}
+                  {data.theme?.primaryColor || "#3b82f6"}
                 </span>
               </div>
             </div>
@@ -1328,14 +1379,14 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               <div className="flex items-center gap-2">
                 <input
                   type="color"
-                  value={data.theme?.highlightColor || "#f0f9ff"}
+                  value={data.theme?.highlightColor || "#eff6ff"}
                   onChange={(e) =>
                     handleThemeChange("highlightColor", e.target.value)
                   }
                   className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
                 <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
-                  {data.theme?.highlightColor || "#f0f9ff"}
+                  {data.theme?.highlightColor || "#eff6ff"}
                 </span>
               </div>
             </div>
@@ -1363,14 +1414,14 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               <div className="flex items-center gap-2">
                 <input
                   type="color"
-                  value={data.theme?.detailColor || "#1f2937"}
+                  value={data.theme?.detailColor || "#334155"}
                   onChange={(e) =>
                     handleThemeChange("detailColor", e.target.value)
                   }
                   className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
                 <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
-                  {data.theme?.detailColor || "#1f2937"}
+                  {data.theme?.detailColor || "#334155"}
                 </span>
               </div>
             </div>
