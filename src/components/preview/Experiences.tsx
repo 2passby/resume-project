@@ -50,12 +50,7 @@ export function Experiences({
       />
       <div className="space-y-5">
         {experiences.map((exp) => (
-          <div
-            key={exp.id}
-            data-page-block="avoid"
-            className="break-inside-avoid"
-            style={{ breakInside: "avoid-page", pageBreakInside: "avoid" }}
-          >
+          <div key={exp.id}>
             <div className={headerClassName} style={headerStyle}>
               <span className="text-[13px] text-gray-500 font-medium">
                 {exp.timePeriod}

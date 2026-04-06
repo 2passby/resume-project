@@ -32,10 +32,10 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   const detailColor = theme?.detailColor || preset.theme.detailColor;
   const previewClassName =
     styleId === "minimal"
-      ? "bg-white px-14 py-12 min-h-[1131px] w-[800px] font-sans text-slate-900"
+      ? "bg-white px-14 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-slate-900"
       : styleId === "editorial"
-      ? "bg-[#fffdfd] px-12 py-12 min-h-[1131px] w-[800px] font-sans text-slate-800"
-      : "bg-white p-12 min-h-[1131px] w-[800px] font-sans text-gray-800";
+      ? "bg-[#fffdfd] px-12 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-slate-800"
+      : "bg-white px-12 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-gray-800";
 
   // Helper function to check if a section should be rendered
   const isVisible = (section: keyof typeof visible) => {

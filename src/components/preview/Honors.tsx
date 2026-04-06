@@ -33,12 +33,7 @@ export function Honors({ honors, title, isVisible, styleId }: HonorsProps) {
       />
       <div className={listClassName}>
         {honors.map((honor) => (
-          <div
-            key={honor.id}
-            data-page-block="avoid"
-            className={rowClassName}
-            style={{ breakInside: "avoid-page", pageBreakInside: "avoid" }}
-          >
+          <div key={honor.id} className={rowClassName}>
             <span
               className="mr-2 text-[8px]"
               style={{ color: "var(--color-primary)" }}
