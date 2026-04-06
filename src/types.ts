@@ -47,6 +47,13 @@ export interface SectionVisibility {
   honors: boolean;
 }
 
+export interface SectionTitles {
+  skills: string;
+  experiences: string;
+  projects: string;
+  honors: string;
+}
+
 export interface ResumeData {
   basicInfo: {
     name: string;
@@ -61,6 +68,8 @@ export interface ResumeData {
   honors: Honor[];
   theme: ThemeConfig;
   visible: SectionVisibility;
+  sectionTitles: SectionTitles;
+  sectionOrder: string[];
 }
 
 export const defaultResumeData: ResumeData = {

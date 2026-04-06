@@ -48,7 +48,7 @@ function App() {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Left Sidebar */}
-      <div className="w-[450px] bg-white border-r shadow-lg flex-shrink-0 flex flex-col h-full overflow-y-auto z-10">
+      <div className="w-[470px] bg-white shadow-lg flex-shrink-0 flex flex-col h-full overflow-y-auto z-10">
         <Sidebar data={data} setData={setData} onExport={handlePrint} />
       </div>
 

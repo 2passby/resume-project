@@ -352,7 +352,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
       <div className="p-6 border-b border-gray-200 bg-white sticky top-0 z-10">
         <h1 className="text-3xl font-bold text-center text-primary mb-6">
@@ -589,7 +589,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("skills")}
           >
-            <div className="flex items-center gap-2">技术栈</div>
+            <div className="flex items-center gap-2">相关技能</div>
             <button
               onClick={(e) => toggleVisibility("skills", e)}
               className={`p-1.5 rounded-md transition-colors ${
