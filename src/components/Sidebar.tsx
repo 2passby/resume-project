@@ -51,10 +51,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
   });
 
   const sectionCardClassName =
-    "overflow-hidden rounded-[28px] border border-white/80 bg-white/88 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm";
+    "overflow-hidden rounded-[10px] border border-white/80 bg-white/88 shadow-[0_12px_28px_rgba(15,23,42,0.06)] backdrop-blur-sm";
   const sectionHeaderClassName =
-    "flex items-center justify-between border-b border-slate-100/90 px-5 py-4 text-slate-800";
-  const sectionBodyClassName = "space-y-4 px-5 pb-5 pt-3";
+    "flex items-center justify-between border-b border-slate-100/90 px-4 py-3.5 text-slate-800";
+  const sectionBodyClassName = "space-y-4 px-4 pb-4 pt-3";
   const fieldClassName =
     "w-full rounded-2xl border border-slate-200/90 bg-white/90 px-3 py-2.5 text-sm text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10";
   const compactFieldClassName =
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
   const duplicateButtonClassName =
     "rounded-2xl p-2 text-primary transition-colors hover:bg-primary/10";
   const itemCardClassName =
-    "relative space-y-4 rounded-[24px] border border-slate-200/80 bg-slate-50/85 p-4";
+    "relative space-y-4 rounded-[12px] border border-slate-200/80 bg-slate-50/85 p-4";
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));

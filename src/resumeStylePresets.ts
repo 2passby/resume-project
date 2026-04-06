@@ -10,8 +10,8 @@ export interface ResumeStylePreset {
 export const resumeStylePresets: ResumeStylePreset[] = [
   {
     id: "modern",
-    label: "现代卡片",
-    description: "清爽蓝系，层次更轻盈",
+    label: "现代",
+    description: "轻盈蓝色",
     theme: {
       styleId: "modern",
       primaryColor: "#3b82f6",
@@ -22,8 +22,8 @@ export const resumeStylePresets: ResumeStylePreset[] = [
   },
   {
     id: "minimal",
-    label: "极简专业",
-    description: "黑白灰为主，适合正式投递",
+    label: "极简",
+    description: "经典黑白",
     theme: {
       styleId: "minimal",
       primaryColor: "#111827",
@@ -34,8 +34,8 @@ export const resumeStylePresets: ResumeStylePreset[] = [
   },
   {
     id: "editorial",
-    label: "编辑感",
-    description: "白粉蓝混合，更有设计感",
+    label: "创意",
+    description: "清新粉白",
     theme: {
       styleId: "editorial",
       primaryColor: "#ec4899",
