@@ -344,7 +344,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
       {/* Header */}
       <div className="p-6 border-b border-gray-200 bg-white sticky top-0 z-10">
         <h1 className="text-3xl font-bold text-center text-primary mb-6">
-          Dora's Resume
+          Dong's Resume
         </h1>
         <div className="flex justify-center gap-3">
           <button
@@ -583,7 +583,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   <textarea
                     value={skill.content}
                     onChange={(e) => handleSkillChange(idx, e.target.value)}
-                    className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                    className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
                     placeholder="请输入技能描述..."
                   />
                   <button
@@ -722,7 +722,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                           e.target.value
                         )
                       }
-                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
                     />
                   </div>
 
@@ -743,7 +743,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 e.target.value
                               )
                             }
-                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
                           />
                           <button
                             onClick={() =>
@@ -858,7 +858,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                       onChange={(e) =>
                         handleProjectChange(idx, "description", e.target.value)
                       }
-                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
                     />
                   </div>
 
@@ -879,7 +879,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 e.target.value
                               )
                             }
-                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
                           />
                           <button
                             onClick={() => removeProjectDetail(idx, detailIdx)}

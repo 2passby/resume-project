@@ -56,16 +56,16 @@ export interface ResumeData {
 
 export const defaultResumeData: ResumeData = {
   basicInfo: {
-    name: "哆啦",
+    name: "Dong",
     email: "xxxxxxxxxxx@qq.com",
     phone: "xxxxxxxxxxx",
     website: "https://github.com/zbwer",
     educations: [
       {
         id: "1",
-        university: "电子科技大学 (985)",
-        major: "计算机科学与技术",
-        timePeriod: "本科 2021-2025",
+        university: "南京邮电大学",
+        major: "计算机技术",
+        timePeriod: "硕士 2023-2026",
       },
     ],
   },
