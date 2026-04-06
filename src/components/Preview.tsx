@@ -63,10 +63,16 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       {isVisible("skills") && skills.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="相关技能" subtitle="TECH STACK" />
-          <ul className="list-disc list-inside pl-1 text-[13px] space-y-1.5 leading-relaxed text-gray-800">
+          <ul className="list-none pl-0 text-[13px] space-y-1.5 leading-relaxed text-gray-800 px-2 mt-3">
             {skills.map((skill) => (
-              <li key={skill.id} className="marker:text-primary">
-                {skill.content}
+              <li key={skill.id} className="flex items-start">
+                <span
+                  className="mr-2 text-[8px] mt-[6px]"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  ●
+                </span>
+                <span className="flex-1">{skill.content}</span>
               </li>
             ))}
           </ul>
@@ -104,7 +110,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                   {exp.details.map((detail, idx) => (
                     <li key={idx} className="flex items-start">
                       <span
-                        className="mr-1.5 text-[10px] mt-[5px]"
+                        className="mr-2 text-[8px] mt-[6px]"
                         style={{ color: "var(--color-primary)" }}
                       >
                         ●
@@ -179,7 +185,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                   {proj.details.map((detail, idx) => (
                     <li key={idx} className="flex items-start">
                       <span
-                        className="mr-1.5 text-[10px] mt-[5px]"
+                        className="mr-2 text-[8px] mt-[6px]"
                         style={{ color: "var(--color-primary)" }}
                       >
                         ●
@@ -197,13 +203,18 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       {isVisible("honors") && honors.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="荣誉奖项" subtitle="HONORS & AWARDS" />
-          <div className="space-y-1.5 mt-3">
+          <div className="space-y-1.5 mt-3 px-2">
             {honors.map((honor) => (
               <div
                 key={honor.id}
                 className="flex items-center text-[13px] text-gray-800 break-inside-avoid"
               >
-                <span className="text-primary mr-1.5 text-[10px]">●</span>
+                <span
+                  className="mr-2 text-[8px]"
+                  style={{ color: "var(--color-primary)" }}
+                >
+                  ●
+                </span>
                 <span className="w-24 text-gray-500 font-medium">
                   {honor.date}
                 </span>
