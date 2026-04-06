@@ -19,6 +19,7 @@ const PREVIEW_SCALE_STEP = 0.1;
 const PREVIEW_PAGE_HEIGHT = A4_PAGE_HEIGHT_PX;
 const PREVIEW_PAGE_WIDTH = A4_PAGE_WIDTH_PX;
 const PREVIEW_PAGE_TOP_PADDING = 48;
+const PREVIEW_PAGE_BOTTOM_PADDING = 32;
 const PAGE_OVERFLOW_EPSILON = 1;
 const PRINT_PAGE_STYLE = `
   @page {
@@ -54,8 +55,10 @@ function getRelativeOffsetTop(element: HTMLElement, ancestor: HTMLElement) {
 
 function getPageCapacity(pageNumber: number) {
   return pageNumber === 1
-    ? PREVIEW_PAGE_HEIGHT
-    : PREVIEW_PAGE_HEIGHT - PREVIEW_PAGE_TOP_PADDING;
+    ? PREVIEW_PAGE_HEIGHT - PREVIEW_PAGE_BOTTOM_PADDING
+    : PREVIEW_PAGE_HEIGHT -
+        PREVIEW_PAGE_TOP_PADDING -
+        PREVIEW_PAGE_BOTTOM_PADDING;
 }
 
 function getPreviewPageOffsets(root: HTMLDivElement) {

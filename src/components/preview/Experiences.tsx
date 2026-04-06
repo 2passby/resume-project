@@ -50,8 +50,12 @@ export function Experiences({
       />
       <div className="space-y-5">
         {experiences.map((exp) => (
-          <div key={exp.id} data-page-block="item">
-            <div className={headerClassName} style={headerStyle}>
+          <div key={exp.id}>
+            <div
+              className={headerClassName}
+              style={headerStyle}
+              data-page-block="item"
+            >
               <span className="text-[13px] text-gray-500 font-medium">
                 {exp.timePeriod}
               </span>
@@ -65,7 +69,9 @@ export function Experiences({
                 {exp.role}
               </span>
             </div>
-            <div className={descriptionClassName}>{exp.description}</div>
+            <div className={descriptionClassName} data-page-block="item">
+              {exp.description}
+            </div>
             <ul
               className={listClassName}
               style={{
@@ -74,7 +80,11 @@ export function Experiences({
               }}
             >
               {exp.details.map((detail, idx) => (
-                <li key={idx} className="flex items-start">
+                <li
+                  key={idx}
+                  className="flex items-start"
+                  data-page-block="item"
+                >
                   <span
                     className="mr-2 text-[8px] mt-[6px]"
                     style={{ color: "var(--color-primary)" }}
@@ -86,7 +96,10 @@ export function Experiences({
               ))}
             </ul>
             {exp.technologies && exp.technologies.length > 0 && (
-              <div className="mt-2 text-[13px] flex items-center px-2">
+              <div
+                className="mt-2 text-[13px] flex items-center px-2"
+                data-page-block="item"
+              >
                 <span className="font-bold mr-2 text-gray-800">技术栈:</span>
                 <div className="flex gap-2 flex-wrap">
                   {exp.technologies.map((tech, idx) => (

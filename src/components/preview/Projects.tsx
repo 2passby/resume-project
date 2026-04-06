@@ -42,8 +42,12 @@ export function Projects({
       <SectionTitle title={title} subtitle="PROJECTS" styleId={styleId} />
       <div className="space-y-5">
         {projects.map((proj) => (
-          <div key={proj.id} data-page-block="item">
-            <div className={headerClassName} style={headerStyle}>
+          <div key={proj.id}>
+            <div
+              className={headerClassName}
+              style={headerStyle}
+              data-page-block="item"
+            >
               <span
                 className="text-[15px] font-bold"
                 style={{ color: "var(--color-primary)" }}
@@ -65,7 +69,9 @@ export function Projects({
                 ))}
               </div>
             </div>
-            <div className={descriptionClassName}>{proj.description}</div>
+            <div className={descriptionClassName} data-page-block="item">
+              {proj.description}
+            </div>
             <ul
               className={listClassName}
               style={{
@@ -74,7 +80,11 @@ export function Projects({
               }}
             >
               {proj.details.map((detail, idx) => (
-                <li key={idx} className="flex items-start">
+                <li
+                  key={idx}
+                  className="flex items-start"
+                  data-page-block="item"
+                >
                   <span
                     className="mr-2 text-[8px] mt-[6px]"
                     style={{ color: "var(--color-primary)" }}
