@@ -57,29 +57,26 @@ function App() {
   }, [currentPage]);
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
-      {/* Left Sidebar */}
-      <div className="w-[470px] bg-white shadow-lg flex-shrink-0 flex flex-col h-full overflow-y-auto z-10">
+    <div className="flex h-screen overflow-hidden bg-transparent">
+      <div className="w-[430px] xl:w-[470px] flex-shrink-0 h-full overflow-y-auto z-10 px-4 py-4">
         <Sidebar data={data} setData={setData} onExport={handlePrint} />
       </div>
 
-      {/* Right Preview */}
-      <div className="flex-1 flex justify-center items-start overflow-y-auto p-8 relative bg-gray-100">
-        <div className="relative flex items-start gap-6 mt-8">
-          {/* Pagination Controls - Left Side */}
+      <div className="flex-1 flex justify-center items-start overflow-y-auto px-8 py-10 relative">
+        <div className="relative flex items-start gap-6">
           {totalPages > 1 && (
-            <div className="sticky top-8 flex flex-col items-center gap-4 bg-white p-3 rounded-2xl shadow-md z-10 border border-gray-200">
+            <div className="sticky top-10 flex flex-col items-center gap-4 rounded-[28px] border border-white/70 bg-white/85 p-3 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm z-10">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent text-primary"
+                className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
                 title="上一页"
               >
                 <ChevronUp size={24} />
               </button>
-              <div className="flex flex-col items-center font-bold text-gray-700 space-y-1">
+              <div className="flex flex-col items-center space-y-1 font-bold text-slate-700">
                 <span className="text-lg">{currentPage}</span>
-                <span className="text-xs text-gray-400 border-t border-gray-300 w-full text-center pt-1">
+                <span className="w-full border-t border-slate-200 pt-1 text-center text-xs text-slate-400">
                   {totalPages}
                 </span>
               </div>
@@ -88,7 +85,7 @@ function App() {
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-full hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-transparent text-primary"
+                className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
                 title="下一页"
               >
                 <ChevronDown size={24} />
@@ -96,9 +93,8 @@ function App() {
             </div>
           )}
 
-          {/* Preview Container */}
           <div className="w-[800px] transform-gpu scale-[0.9] origin-top flex-shrink-0">
-            <div className="h-[1131px] w-[800px] overflow-hidden shadow-2xl bg-white relative ring-1 ring-gray-200">
+            <div className="relative h-[1131px] w-[800px] overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
               <div
                 style={{
                   transform: `translateY(-${(currentPage - 1) * 1131}px)`,

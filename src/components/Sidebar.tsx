@@ -6,6 +6,7 @@ import {
   Save,
   Trash2,
   LayoutTemplate,
+  Info,
   Plus,
   X,
   Copy,
@@ -47,6 +48,28 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     projects: false,
     honors: false,
   });
+
+  const sectionCardClassName =
+    "overflow-hidden rounded-[28px] border border-white/80 bg-white/88 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm";
+  const sectionHeaderClassName =
+    "flex items-center justify-between border-b border-slate-100/90 px-5 py-4 text-slate-800";
+  const sectionBodyClassName = "space-y-4 px-5 pb-5 pt-3";
+  const fieldClassName =
+    "w-full rounded-2xl border border-slate-200/90 bg-white/90 px-3 py-2.5 text-sm text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10";
+  const compactFieldClassName =
+    "w-full rounded-2xl border border-slate-200/90 bg-white/90 px-3 py-2 text-xs text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10";
+  const textareaClassName = `${fieldClassName} min-h-[88px] resize-none`;
+  const compactTextareaClassName = `${compactFieldClassName} min-h-[84px] resize-none`;
+  const actionButtonClassName =
+    "inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold transition-all duration-200";
+  const subtleButtonClassName =
+    "inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900";
+  const deleteButtonClassName =
+    "rounded-2xl p-2 text-rose-500 transition-colors hover:bg-rose-50";
+  const duplicateButtonClassName =
+    "rounded-2xl p-2 text-primary transition-colors hover:bg-primary/10";
+  const itemCardClassName =
+    "relative space-y-4 rounded-[24px] border border-slate-200/80 bg-slate-50/85 p-4";
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
@@ -443,7 +466,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
         onPointerDown={(e) => e.stopPropagation()}
-        className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+        className="w-36 rounded-xl border border-transparent bg-transparent px-2 py-1 text-lg font-bold text-slate-800 outline-none transition focus:border-primary/20 focus:bg-primary/5 focus:ring-4 focus:ring-primary/10"
         placeholder={placeholder}
       />
     );
@@ -459,20 +482,17 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     switch (id) {
       case "skills":
         return (
-          <div
-            key="skills"
-            className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
-          >
+          <div key="skills" className={sectionCardClassName}>
             <div
               {...dragProps?.attributes}
               {...dragProps?.listeners}
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
+              className={`${sectionHeaderClassName} cursor-grab active:cursor-grabbing transition-colors hover:bg-slate-50/80`}
               onClick={() => toggleSection("skills")}
             >
               <div className="flex items-center gap-2 flex-1">
                 <GripVertical
                   size={18}
-                  className="text-gray-400 outline-none"
+                  className="text-slate-300 outline-none"
                 />
                 <TitleInput
                   sectionKey="skills"
@@ -484,10 +504,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 <button
                   onClick={(e) => toggleVisibility("skills", e)}
                   onPointerDown={(e) => e.stopPropagation()}
-                  className={`p-1.5 rounded-md transition-colors ${
+                  className={`rounded-2xl p-2 transition-colors ${
                     data.visible?.skills !== false
-                      ? "text-primary hover:bg-blue-50"
-                      : "text-gray-400 hover:bg-gray-100"
+                      ? "text-primary hover:bg-primary/10"
+                      : "text-slate-400 hover:bg-slate-100"
                   }`}
                   title={
                     data.visible?.skills !== false ? "点击隐藏" : "点击显示"
@@ -502,28 +522,25 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               </div>
             </div>
             {expandedSections.skills && (
-              <div className="space-y-3 p-4 pt-2">
+              <div className={sectionBodyClassName}>
                 {data.skills.map((skill, idx) => (
-                  <div key={skill.id} className="flex gap-2 items-start">
+                  <div key={skill.id} className="flex items-start gap-2">
                     <textarea
                       value={skill.content}
                       onChange={(e) => handleSkillChange(idx, e.target.value)}
-                      className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
+                      className={`flex-1 ${textareaClassName}`}
                       placeholder="请输入技能描述..."
                     />
                     <button
                       onClick={() => removeSkill(idx)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded"
+                      className={deleteButtonClassName}
                       title="删除此项"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 ))}
-                <button
-                  onClick={addSkill}
-                  className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
-                >
+                <button onClick={addSkill} className={subtleButtonClassName}>
                   <Plus size={16} /> 添加技能
                 </button>
               </div>
@@ -532,20 +549,17 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         );
       case "experiences":
         return (
-          <div
-            key="experiences"
-            className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
-          >
+          <div key="experiences" className={sectionCardClassName}>
             <div
               {...dragProps?.attributes}
               {...dragProps?.listeners}
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
+              className={`${sectionHeaderClassName} cursor-grab active:cursor-grabbing transition-colors hover:bg-slate-50/80`}
               onClick={() => toggleSection("experiences")}
             >
               <div className="flex items-center gap-2 flex-1">
                 <GripVertical
                   size={18}
-                  className="text-gray-400 outline-none"
+                  className="text-slate-300 outline-none"
                 />
                 <TitleInput
                   sectionKey="experiences"
@@ -557,10 +571,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 <button
                   onClick={(e) => toggleVisibility("experiences", e)}
                   onPointerDown={(e) => e.stopPropagation()}
-                  className={`p-1.5 rounded-md transition-colors ${
+                  className={`rounded-2xl p-2 transition-colors ${
                     data.visible?.experiences !== false
-                      ? "text-primary hover:bg-blue-50"
-                      : "text-gray-400 hover:bg-gray-100"
+                      ? "text-primary hover:bg-primary/10"
+                      : "text-slate-400 hover:bg-slate-100"
                   }`}
                   title={
                     data.visible?.experiences !== false
@@ -577,23 +591,20 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               </div>
             </div>
             {expandedSections.experiences && (
-              <div className="space-y-6 p-4 pt-2">
+              <div className={sectionBodyClassName}>
                 {data.experiences.map((exp, idx) => (
-                  <div
-                    key={exp.id}
-                    className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
-                  >
+                  <div key={exp.id} className={itemCardClassName}>
                     <div className="absolute top-2 right-2 flex gap-1">
                       <button
                         onClick={() => duplicateExperience(idx)}
-                        className="p-1.5 text-blue-500 hover:bg-blue-100 rounded"
+                        className={duplicateButtonClassName}
                         title="复制此经历"
                       >
                         <Copy size={16} />
                       </button>
                       <button
                         onClick={() => removeExperience(idx)}
-                        className="p-1.5 text-red-500 hover:bg-red-100 rounded"
+                        className={deleteButtonClassName}
                         title="删除此经历"
                       >
                         <X size={16} />
@@ -615,7 +626,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                               e.target.value
                             )
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                       <div>
@@ -628,7 +639,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                           onChange={(e) =>
                             handleExperienceChange(idx, "role", e.target.value)
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                       <div>
@@ -645,7 +656,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                               e.target.value
                             )
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                       <div>
@@ -665,7 +676,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 .filter(Boolean)
                             )
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                     </div>
@@ -683,7 +694,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                             e.target.value
                           )
                         }
-                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
+                        className={textareaClassName}
                       />
                     </div>
 
@@ -709,13 +720,13 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
+                              className={`flex-1 ${compactTextareaClassName}`}
                             />
                             <button
                               onClick={() =>
                                 removeExperienceDetail(idx, detailIdx)
                               }
-                              className="p-1.5 text-red-500 hover:bg-red-100 rounded mt-1"
+                              className={`${deleteButtonClassName} mt-1`}
                             >
                               <X size={14} />
                             </button>
@@ -724,7 +735,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                       </div>
                       <button
                         onClick={() => addExperienceDetail(idx)}
-                        className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary-dark"
+                        className={`${subtleButtonClassName} mt-1 px-0 py-0 text-xs`}
                       >
                         <Plus size={14} /> 添加描述项
                       </button>
@@ -733,7 +744,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 ))}
                 <button
                   onClick={addExperience}
-                  className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1 text-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-[24px] border border-dashed border-primary/25 bg-primary/5 py-3 text-sm font-semibold text-primary transition-colors hover:border-primary/45 hover:bg-primary/10"
                 >
                   <Plus size={16} /> 添加实习经历
                 </button>
@@ -743,20 +754,17 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         );
       case "projects":
         return (
-          <div
-            key="projects"
-            className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
-          >
+          <div key="projects" className={sectionCardClassName}>
             <div
               {...dragProps?.attributes}
               {...dragProps?.listeners}
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
+              className={`${sectionHeaderClassName} cursor-grab active:cursor-grabbing transition-colors hover:bg-slate-50/80`}
               onClick={() => toggleSection("projects")}
             >
               <div className="flex items-center gap-2 flex-1">
                 <GripVertical
                   size={18}
-                  className="text-gray-400 outline-none"
+                  className="text-slate-300 outline-none"
                 />
                 <TitleInput
                   sectionKey="projects"
@@ -768,10 +776,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 <button
                   onClick={(e) => toggleVisibility("projects", e)}
                   onPointerDown={(e) => e.stopPropagation()}
-                  className={`p-1.5 rounded-md transition-colors ${
+                  className={`rounded-2xl p-2 transition-colors ${
                     data.visible?.projects !== false
-                      ? "text-primary hover:bg-blue-50"
-                      : "text-gray-400 hover:bg-gray-100"
+                      ? "text-primary hover:bg-primary/10"
+                      : "text-slate-400 hover:bg-slate-100"
                   }`}
                   title={
                     data.visible?.projects !== false ? "点击隐藏" : "点击显示"
@@ -786,23 +794,20 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               </div>
             </div>
             {expandedSections.projects && (
-              <div className="space-y-6 p-4 pt-2">
+              <div className={sectionBodyClassName}>
                 {data.projects.map((proj, idx) => (
-                  <div
-                    key={proj.id}
-                    className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
-                  >
+                  <div key={proj.id} className={itemCardClassName}>
                     <div className="absolute top-2 right-2 flex gap-1">
                       <button
                         onClick={() => duplicateProject(idx)}
-                        className="p-1.5 text-blue-500 hover:bg-blue-100 rounded"
+                        className={duplicateButtonClassName}
                         title="复制此项目"
                       >
                         <Copy size={16} />
                       </button>
                       <button
                         onClick={() => removeProject(idx)}
-                        className="p-1.5 text-red-500 hover:bg-red-100 rounded"
+                        className={deleteButtonClassName}
                         title="删除此项目"
                       >
                         <X size={16} />
@@ -820,7 +825,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                           onChange={(e) =>
                             handleProjectChange(idx, "name", e.target.value)
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                       <div className="col-span-2">
@@ -840,7 +845,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 .filter(Boolean)
                             )
                           }
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                          className={fieldClassName}
                         />
                       </div>
                     </div>
@@ -858,7 +863,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                             e.target.value
                           )
                         }
-                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
+                        className={textareaClassName}
                       />
                     </div>
 
@@ -884,13 +889,13 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                   e.target.value
                                 )
                               }
-                              className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px] resize-none"
+                              className={`flex-1 ${compactTextareaClassName}`}
                             />
                             <button
                               onClick={() =>
                                 removeProjectDetail(idx, detailIdx)
                               }
-                              className="p-1.5 text-red-500 hover:bg-red-100 rounded mt-1"
+                              className={`${deleteButtonClassName} mt-1`}
                             >
                               <X size={14} />
                             </button>
@@ -899,7 +904,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                       </div>
                       <button
                         onClick={() => addProjectDetail(idx)}
-                        className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary-dark"
+                        className={`${subtleButtonClassName} mt-1 px-0 py-0 text-xs`}
                       >
                         <Plus size={14} /> 添加描述项
                       </button>
@@ -908,7 +913,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 ))}
                 <button
                   onClick={addProject}
-                  className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1 text-sm"
+                  className="flex w-full items-center justify-center gap-2 rounded-[24px] border border-dashed border-primary/25 bg-primary/5 py-3 text-sm font-semibold text-primary transition-colors hover:border-primary/45 hover:bg-primary/10"
                 >
                   <Plus size={16} /> 添加项目经历
                 </button>
@@ -918,20 +923,17 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         );
       case "honors":
         return (
-          <div
-            key="honors"
-            className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
-          >
+          <div key="honors" className={sectionCardClassName}>
             <div
               {...dragProps?.attributes}
               {...dragProps?.listeners}
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
+              className={`${sectionHeaderClassName} cursor-grab active:cursor-grabbing transition-colors hover:bg-slate-50/80`}
               onClick={() => toggleSection("honors")}
             >
               <div className="flex items-center gap-2 flex-1">
                 <GripVertical
                   size={18}
-                  className="text-gray-400 outline-none"
+                  className="text-slate-300 outline-none"
                 />
                 <TitleInput
                   sectionKey="honors"
@@ -943,10 +945,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 <button
                   onClick={(e) => toggleVisibility("honors", e)}
                   onPointerDown={(e) => e.stopPropagation()}
-                  className={`p-1.5 rounded-md transition-colors ${
+                  className={`rounded-2xl p-2 transition-colors ${
                     data.visible?.honors !== false
-                      ? "text-primary hover:bg-blue-50"
-                      : "text-gray-400 hover:bg-gray-100"
+                      ? "text-primary hover:bg-primary/10"
+                      : "text-slate-400 hover:bg-slate-100"
                   }`}
                   title={
                     data.visible?.honors !== false ? "点击隐藏" : "点击显示"
@@ -961,16 +963,19 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
               </div>
             </div>
             {expandedSections.honors && (
-              <div className="space-y-3 p-4 pt-2">
+              <div className={sectionBodyClassName}>
                 {data.honors.map((honor, idx) => (
-                  <div key={honor.id} className="flex gap-2 items-start">
+                  <div
+                    key={honor.id}
+                    className="flex items-start gap-2 rounded-[22px] border border-slate-200/80 bg-slate-50/75 p-2.5"
+                  >
                     <input
                       type="text"
                       value={honor.date}
                       onChange={(e) =>
                         handleHonorChange(idx, "date", e.target.value)
                       }
-                      className="w-24 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      className="w-28 rounded-2xl border border-slate-200/90 bg-white/90 px-3 py-2 text-sm text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10"
                       placeholder="时间"
                     />
                     <input
@@ -979,22 +984,19 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                       onChange={(e) =>
                         handleHonorChange(idx, "name", e.target.value)
                       }
-                      className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      className="flex-1 rounded-2xl border border-slate-200/90 bg-white/90 px-3 py-2 text-sm text-slate-700 shadow-[0_1px_2px_rgba(15,23,42,0.04)] outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10"
                       placeholder="奖项名称"
                     />
                     <button
                       onClick={() => removeHonor(idx)}
-                      className="p-2 text-red-500 hover:bg-red-50 rounded"
+                      className={deleteButtonClassName}
                       title="删除此项"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 ))}
-                <button
-                  onClick={addHonor}
-                  className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
-                >
+                <button onClick={addHonor} className={subtleButtonClassName}>
                   <Plus size={16} /> 添加荣誉奖项
                 </button>
               </div>
@@ -1034,59 +1036,81 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-200 bg-white sticky top-0 z-10">
-        <h1 className="text-3xl font-bold text-center text-primary mb-6">
-          Dong's Resume
-        </h1>
-        <div className="flex justify-center gap-3">
+    <div className="flex h-full flex-col overflow-hidden rounded-[34px] border border-white/70 bg-white/72 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+      <div className="sticky top-0 z-10 border-b border-white/70 bg-white/78 px-6 pb-5 pt-6 backdrop-blur-xl">
+        <div className="mb-5 flex items-start justify-between gap-4">
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/10 bg-primary/8 px-3 py-1 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+              Resume Studio
+            </span>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                Dong's Resume
+              </h1>
+              <p className="max-w-xs text-sm leading-6 text-slate-500">
+                更快整理经历，实时预览效果，左侧编辑区保持轻盈且现代的工作台体验。
+              </p>
+            </div>
+          </div>
+          <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[linear-gradient(135deg,rgba(244,114,182,0.18),rgba(96,165,250,0.2))] text-sm font-bold text-slate-700 shadow-inner shadow-white/80">
+            CV
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={handleExample}
-            className="flex items-center gap-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm font-medium"
+            className={`${actionButtonClassName} border border-slate-200 bg-slate-100/85 text-slate-700 hover:bg-slate-200/80`}
           >
             <LayoutTemplate size={16} /> 示例
           </button>
           <button
             onClick={handleReset}
-            className="flex items-center gap-1 px-4 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-colors text-sm font-medium"
+            className={`${actionButtonClassName} border border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100`}
           >
             <Trash2 size={16} /> 清空
           </button>
           <button
             onClick={() => alert("保存成功")}
-            className="flex items-center gap-1 px-4 py-2 bg-blue-50 text-primary rounded-md hover:bg-blue-100 transition-colors text-sm font-medium"
+            className={`${actionButtonClassName} border border-primary/10 bg-primary/8 text-primary hover:bg-primary/12`}
           >
             <Save size={16} /> 保存
           </button>
           <button
             onClick={onExport}
-            className="flex items-center gap-1 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors text-sm font-medium"
+            className={`${actionButtonClassName} bg-primary text-white shadow-[0_12px_24px_rgba(59,130,246,0.24)] hover:bg-primary-dark`}
           >
             <FileDown size={16} /> 导出
           </button>
         </div>
       </div>
 
-      <div className="p-4 bg-blue-50 text-blue-700 text-xs mx-6 mt-4 rounded border border-blue-100">
-        ℹ️ 所有数据仅存于本地浏览器，支持离线编辑。
+      <div className="mx-6 mt-5 flex items-center gap-3 rounded-[24px] border border-primary/10 bg-gradient-to-r from-sky-50 via-white/95 to-pink-50 px-4 py-3 text-sm text-slate-600">
+        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-[0_8px_20px_rgba(59,130,246,0.14)]">
+          <Info size={18} />
+        </div>
+        <div>
+          <div className="font-semibold text-slate-800">本地优先编辑</div>
+          <div className="text-xs text-slate-500">
+            所有数据仅存于当前浏览器，离线也能继续修改。
+          </div>
+        </div>
       </div>
 
-      {/* Form Content */}
-      <div className="p-6 overflow-y-auto flex-1 space-y-6">
-        {/* Basic Info Section */}
-        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <div className="flex-1 space-y-6 overflow-y-auto px-6 pb-6 pt-5">
+        <div className={sectionCardClassName}>
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+            className={`${sectionHeaderClassName} cursor-pointer transition-colors hover:bg-slate-50/80`}
             onClick={() => toggleSection("basicInfo")}
           >
-            <div className="flex items-center gap-2">基本信息</div>
+            <div className="flex items-center gap-2 text-lg font-bold">
+              基本信息
+            </div>
             <button
               onClick={(e) => toggleVisibility("basicInfo", e)}
-              className={`p-1.5 rounded-md transition-colors ${
+              className={`rounded-2xl p-2 transition-colors ${
                 data.visible?.basicInfo !== false
-                  ? "text-primary hover:bg-blue-50"
-                  : "text-gray-400 hover:bg-gray-100"
+                  ? "text-primary hover:bg-primary/10"
+                  : "text-slate-400 hover:bg-slate-100"
               }`}
               title={
                 data.visible?.basicInfo !== false ? "点击隐藏" : "点击显示"
@@ -1101,9 +1125,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           </div>
 
           {expandedSections.basicInfo && (
-            <div className="grid grid-cols-2 gap-4 p-4 pt-2">
+            <div className="grid grid-cols-2 gap-4 px-5 pb-5 pt-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
                   姓名
                 </label>
                 <input
@@ -1112,19 +1136,19 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleBasicInfoChange("name", e.target.value)
                   }
-                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                  className={fieldClassName}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
                   证件照 (可选)
                 </label>
-                <button className="w-full p-2 border border-dashed border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">
-                  ↑ Click to Upload
+                <button className="flex w-full items-center justify-center rounded-2xl border border-dashed border-primary/25 bg-primary/5 px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/10">
+                  上传照片
                 </button>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
                   邮箱
                 </label>
                 <input
@@ -1133,11 +1157,11 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleBasicInfoChange("email", e.target.value)
                   }
-                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                  className={fieldClassName}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
                   联系方式
                 </label>
                 <input
@@ -1146,13 +1170,13 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleBasicInfoChange("phone", e.target.value)
                   }
-                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                  className={fieldClassName}
                 />
               </div>
 
               {data.basicInfo.website !== undefined ? (
                 <div className="col-span-2 relative group">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="mb-1.5 block text-sm font-medium text-slate-700">
                     个人网站
                   </label>
                   <input
@@ -1161,7 +1185,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                     onChange={(e) =>
                       handleBasicInfoChange("website", e.target.value)
                     }
-                    className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                    className={fieldClassName}
                   />
                   <button
                     onClick={() => {
@@ -1169,7 +1193,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                       delete newBasicInfo.website;
                       setData((prev) => ({ ...prev, basicInfo: newBasicInfo }));
                     }}
-                    className="absolute right-2 top-8 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-50 rounded"
+                    className="absolute right-3 top-9 rounded-xl p-1 text-rose-500 opacity-0 transition-opacity hover:bg-rose-50 group-hover:opacity-100"
                     title="删除个人网站"
                   >
                     <X size={14} />
@@ -1179,27 +1203,26 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 <div className="col-span-2">
                   <button
                     onClick={() => handleBasicInfoChange("website", "")}
-                    className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
+                    className={subtleButtonClassName}
                   >
                     <Plus size={16} /> 添加个人网站
                   </button>
                 </div>
               )}
 
-              {/* Educations */}
               <div className="col-span-2 mt-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-slate-700">
                   教育经历
                 </label>
                 <div className="space-y-3">
                   {data.basicInfo.educations.map((edu, idx) => (
                     <div
                       key={edu.id}
-                      className="flex gap-2 items-start bg-gray-50 p-3 rounded-md relative border border-gray-200"
+                      className="relative flex items-start gap-2 rounded-[24px] border border-slate-200/80 bg-slate-50/80 p-3"
                     >
                       <button
                         onClick={() => removeEducation(idx)}
-                        className="absolute -top-2 -right-2 p-1 bg-white text-red-500 hover:bg-red-50 rounded-full border border-gray-200 shadow-sm"
+                        className="absolute -right-2 -top-2 rounded-full border border-slate-200 bg-white p-1 text-rose-500 shadow-[0_8px_20px_rgba(15,23,42,0.08)] transition-colors hover:bg-rose-50"
                         title="删除此项"
                       >
                         <X size={14} />
@@ -1216,7 +1239,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 e.target.value
                               )
                             }
-                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            className={compactFieldClassName}
                             placeholder="学校名称 (如: 电子科技大学 (985))"
                           />
                         </div>
@@ -1231,7 +1254,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 e.target.value
                               )
                             }
-                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            className={compactFieldClassName}
                             placeholder="专业"
                           />
                         </div>
@@ -1246,7 +1269,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                                 e.target.value
                               )
                             }
-                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            className={compactFieldClassName}
                             placeholder="起止时间 (如: 本科 2021-2025)"
                           />
                         </div>
@@ -1256,7 +1279,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 </div>
                 <button
                   onClick={addEducation}
-                  className="mt-3 flex items-center justify-center w-full gap-1 py-1.5 text-xs text-primary bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                  className="mt-3 flex w-full items-center justify-center gap-2 rounded-[20px] bg-primary/8 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/12"
                 >
                   <Plus size={14} /> 添加教育经历
                 </button>
@@ -1265,7 +1288,6 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           )}
         </div>
 
-        {/* Collapsible Sections */}
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -1281,10 +1303,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           </SortableContext>
         </DndContext>
 
-        {/* Theme Config Placeholder */}
-        <div className="pt-4 border-t border-gray-200 mt-8">
-          <h3 className="font-bold text-gray-800 mb-4">主题配置</h3>
-          <div className="flex flex-col gap-4 text-sm text-gray-600">
+        <div className="mt-2 rounded-[28px] border border-white/80 bg-white/88 px-5 py-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-sm">
+          <h3 className="mb-4 text-lg font-bold text-slate-800">主题配置</h3>
+          <div className="flex flex-col gap-4 text-sm text-slate-600">
             <div className="flex items-center gap-4">
               <span className="w-20">主题色调</span>
               <div className="flex items-center gap-2">
@@ -1294,9 +1315,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleThemeChange("primaryColor", e.target.value)
                   }
-                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                  className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
-                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
                   {data.theme?.primaryColor || "#0ea5e9"}
                 </span>
               </div>
@@ -1311,9 +1332,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleThemeChange("highlightColor", e.target.value)
                   }
-                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                  className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
-                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
                   {data.theme?.highlightColor || "#f0f9ff"}
                 </span>
               </div>
@@ -1327,7 +1348,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleThemeChange("detailFontSize", e.target.value)
                   }
-                  className="p-1 border border-gray-300 rounded text-xs outline-none focus:ring-1 focus:ring-primary"
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 outline-none transition focus:border-primary/70 focus:ring-4 focus:ring-primary/10"
                 >
                   <option value="12px">12px (极小)</option>
                   <option value="13px">13px (标准)</option>
@@ -1346,9 +1367,9 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   onChange={(e) =>
                     handleThemeChange("detailColor", e.target.value)
                   }
-                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                  className="h-10 w-10 cursor-pointer rounded-xl border-0 bg-transparent p-0"
                 />
-                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs font-mono text-slate-600">
                   {data.theme?.detailColor || "#1f2937"}
                 </span>
               </div>
