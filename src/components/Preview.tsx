@@ -6,9 +6,15 @@ interface PreviewProps {
 }
 
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
-  const { basicInfo, skills, experiences, projects, honors, theme } = data;
+  const { basicInfo, skills, experiences, projects, honors, theme, visible } =
+    data;
   const primaryColor = theme?.primaryColor || "#0ea5e9";
   const highlightColor = theme?.highlightColor || "#f0f9ff";
+
+  // Helper function to check if a section should be rendered
+  const isVisible = (section: keyof typeof visible) => {
+    return visible?.[section] !== false;
+  };
 
   return (
     <div
@@ -22,33 +28,39 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       }
     >
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-[20px] font-bold text-primary tracking-widest mb-2">
-          {basicInfo.name}
-        </h1>
-        <div className="text-[15px] text-gray-700 mb-3 flex flex-col justify-center items-center gap-1.5">
-          {basicInfo.educations.map((edu) => (
-            <span key={edu.id}>
-              {edu.timePeriod} <span className="mx-1">/</span>{" "}
-              <span className="font-bold text-primary">{edu.university}</span>{" "}
-              <span className="mx-1">/</span>{" "}
-              <span className="font-bold text-primary">{edu.major}</span>
-            </span>
-          ))}
-        </div>
-        <div className="text-[13px] text-gray-600 flex justify-center gap-4">
-          <span className="flex items-center gap-1">📞 {basicInfo.phone}</span>
-          <span className="flex items-center gap-1">✉️ {basicInfo.email}</span>
-          {basicInfo.website !== undefined && (
+      {isVisible("basicInfo") && (
+        <div className="text-center mb-8">
+          <h1 className="text-[20px] font-bold text-primary tracking-widest mb-2">
+            {basicInfo.name}
+          </h1>
+          <div className="text-[15px] text-gray-700 mb-3 flex flex-col justify-center items-center gap-1.5">
+            {basicInfo.educations.map((edu) => (
+              <span key={edu.id}>
+                {edu.timePeriod} <span className="mx-1">/</span>{" "}
+                <span className="font-bold text-primary">{edu.university}</span>{" "}
+                <span className="mx-1">/</span>{" "}
+                <span className="font-bold text-primary">{edu.major}</span>
+              </span>
+            ))}
+          </div>
+          <div className="text-[13px] text-gray-600 flex justify-center gap-4">
             <span className="flex items-center gap-1">
-              🔗 {basicInfo.website}
+              📞 {basicInfo.phone}
             </span>
-          )}
+            <span className="flex items-center gap-1">
+              ✉️ {basicInfo.email}
+            </span>
+            {basicInfo.website !== undefined && (
+              <span className="flex items-center gap-1">
+                🔗 {basicInfo.website}
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Skills */}
-      {skills.length > 0 && (
+      {isVisible("skills") && skills.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="相关技能" subtitle="TECH STACK" />
           <ul className="list-disc list-inside pl-1 text-[13px] space-y-1.5 leading-relaxed text-gray-800">
@@ -62,7 +74,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       )}
 
       {/* Experience */}
-      {experiences.length > 0 && (
+      {isVisible("experiences") && experiences.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="实习经历" subtitle="INTERNSHIP EXPERIENCE" />
           <div className="space-y-5">
@@ -129,7 +141,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       )}
 
       {/* Projects */}
-      {projects.length > 0 && (
+      {isVisible("projects") && projects.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="项目经历" subtitle="PROJECTS" />
           <div className="space-y-5">
@@ -182,7 +194,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         </div>
       )}
       {/* Honors */}
-      {honors.length > 0 && (
+      {isVisible("honors") && honors.length > 0 && (
         <div className="mb-6">
           <SectionTitle title="荣誉奖项" subtitle="HONORS & AWARDS" />
           <div className="space-y-1.5 mt-3">

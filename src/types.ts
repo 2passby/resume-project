@@ -39,6 +39,14 @@ export interface ThemeConfig {
   highlightColor: string;
 }
 
+export interface SectionVisibility {
+  basicInfo: boolean;
+  skills: boolean;
+  experiences: boolean;
+  projects: boolean;
+  honors: boolean;
+}
+
 export interface ResumeData {
   basicInfo: {
     name: string;
@@ -52,6 +60,7 @@ export interface ResumeData {
   projects: Project[];
   honors: Honor[];
   theme: ThemeConfig;
+  visible: SectionVisibility;
 }
 
 export const defaultResumeData: ResumeData = {
@@ -59,7 +68,7 @@ export const defaultResumeData: ResumeData = {
     name: "Dong",
     email: "xxxxxxxxxxx@qq.com",
     phone: "xxxxxxxxxxx",
-    website: "https://github.com/zbwer",
+    website: "https://github.com/xxxx",
     educations: [
       {
         id: "1",
@@ -140,5 +149,12 @@ export const defaultResumeData: ResumeData = {
   theme: {
     primaryColor: "#0ea5e9",
     highlightColor: "#f0f9ff",
+  },
+  visible: {
+    basicInfo: true,
+    skills: true,
+    experiences: true,
+    projects: true,
+    honors: true,
   },
 };

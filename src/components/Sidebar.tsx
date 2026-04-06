@@ -6,11 +6,11 @@ import {
   Save,
   Trash2,
   LayoutTemplate,
-  ChevronDown,
-  ChevronRight,
   Plus,
   X,
   Copy,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -34,6 +34,17 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
+  const toggleVisibility = (
+    section: keyof typeof defaultResumeData.visible,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+    setData((prev) => ({
+      ...prev,
+      visible: { ...prev.visible, [section]: !prev.visible[section] },
+    }));
+  };
+
   const handleReset = () => {
     if (window.confirm("确定要清空所有数据吗？")) {
       setData({
@@ -49,6 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         projects: [],
         honors: [],
         theme: defaultResumeData.theme,
+        visible: defaultResumeData.visible,
       });
     }
   };
@@ -381,23 +393,33 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
       {/* Form Content */}
       <div className="p-6 overflow-y-auto flex-1 space-y-6">
         {/* Basic Info Section */}
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("basicInfo")}
           >
-            <div className="flex items-center gap-2">
-              {expandedSections.basicInfo ? (
-                <ChevronDown size={20} />
+            <div className="flex items-center gap-2">基本信息</div>
+            <button
+              onClick={(e) => toggleVisibility("basicInfo", e)}
+              className={`p-1.5 rounded-md transition-colors ${
+                data.visible?.basicInfo !== false
+                  ? "text-primary hover:bg-blue-50"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+              title={
+                data.visible?.basicInfo !== false ? "点击隐藏" : "点击显示"
+              }
+            >
+              {data.visible?.basicInfo !== false ? (
+                <Eye size={18} />
               ) : (
-                <ChevronRight size={20} />
-              )}{" "}
-              基本信息
-            </div>
+                <EyeOff size={18} />
+              )}
+            </button>
           </div>
 
           {expandedSections.basicInfo && (
-            <div className="grid grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-2 gap-4 p-4 pt-2">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   姓名
@@ -562,22 +584,30 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         </div>
 
         {/* Collapsible Sections Placeholders */}
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("skills")}
           >
-            <div className="flex items-center gap-2">
-              {expandedSections.skills ? (
-                <ChevronDown size={20} />
+            <div className="flex items-center gap-2">技术栈</div>
+            <button
+              onClick={(e) => toggleVisibility("skills", e)}
+              className={`p-1.5 rounded-md transition-colors ${
+                data.visible?.skills !== false
+                  ? "text-primary hover:bg-blue-50"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+              title={data.visible?.skills !== false ? "点击隐藏" : "点击显示"}
+            >
+              {data.visible?.skills !== false ? (
+                <Eye size={18} />
               ) : (
-                <ChevronRight size={20} />
-              )}{" "}
-              技术栈
-            </div>
+                <EyeOff size={18} />
+              )}
+            </button>
           </div>
           {expandedSections.skills && (
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 p-4 pt-2">
               {data.skills.map((skill, idx) => (
                 <div key={skill.id} className="flex gap-2 items-start">
                   <textarea
@@ -605,22 +635,32 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("experiences")}
           >
-            <div className="flex items-center gap-2">
-              {expandedSections.experiences ? (
-                <ChevronDown size={20} />
+            <div className="flex items-center gap-2">实习经历</div>
+            <button
+              onClick={(e) => toggleVisibility("experiences", e)}
+              className={`p-1.5 rounded-md transition-colors ${
+                data.visible?.experiences !== false
+                  ? "text-primary hover:bg-blue-50"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+              title={
+                data.visible?.experiences !== false ? "点击隐藏" : "点击显示"
+              }
+            >
+              {data.visible?.experiences !== false ? (
+                <Eye size={18} />
               ) : (
-                <ChevronRight size={20} />
-              )}{" "}
-              实习经历
-            </div>
+                <EyeOff size={18} />
+              )}
+            </button>
           </div>
           {expandedSections.experiences && (
-            <div className="space-y-6 pt-2">
+            <div className="space-y-6 p-4 pt-2">
               {data.experiences.map((exp, idx) => (
                 <div
                   key={exp.id}
@@ -775,22 +815,30 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("projects")}
           >
-            <div className="flex items-center gap-2">
-              {expandedSections.projects ? (
-                <ChevronDown size={20} />
+            <div className="flex items-center gap-2">项目经历</div>
+            <button
+              onClick={(e) => toggleVisibility("projects", e)}
+              className={`p-1.5 rounded-md transition-colors ${
+                data.visible?.projects !== false
+                  ? "text-primary hover:bg-blue-50"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+              title={data.visible?.projects !== false ? "点击隐藏" : "点击显示"}
+            >
+              {data.visible?.projects !== false ? (
+                <Eye size={18} />
               ) : (
-                <ChevronRight size={20} />
-              )}{" "}
-              项目经历
-            </div>
+                <EyeOff size={18} />
+              )}
+            </button>
           </div>
           {expandedSections.projects && (
-            <div className="space-y-6 pt-2">
+            <div className="space-y-6 p-4 pt-2">
               {data.projects.map((proj, idx) => (
                 <div
                   key={proj.id}
@@ -909,22 +957,30 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           )}
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
           <div
-            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
             onClick={() => toggleSection("honors")}
           >
-            <div className="flex items-center gap-2">
-              {expandedSections.honors ? (
-                <ChevronDown size={20} />
+            <div className="flex items-center gap-2">荣誉奖项</div>
+            <button
+              onClick={(e) => toggleVisibility("honors", e)}
+              className={`p-1.5 rounded-md transition-colors ${
+                data.visible?.honors !== false
+                  ? "text-primary hover:bg-blue-50"
+                  : "text-gray-400 hover:bg-gray-100"
+              }`}
+              title={data.visible?.honors !== false ? "点击隐藏" : "点击显示"}
+            >
+              {data.visible?.honors !== false ? (
+                <Eye size={18} />
               ) : (
-                <ChevronRight size={20} />
-              )}{" "}
-              荣誉奖项
-            </div>
+                <EyeOff size={18} />
+              )}
+            </button>
           </div>
           {expandedSections.honors && (
-            <div className="space-y-3 pt-2">
+            <div className="space-y-3 p-4 pt-2">
               {data.honors.map((honor, idx) => (
                 <div key={honor.id} className="flex gap-2 items-start">
                   <input
