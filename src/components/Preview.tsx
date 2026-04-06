@@ -126,6 +126,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   return (
     <div
       ref={ref}
+      data-resume-preview="true"
       className={previewClassName}
       style={
         {

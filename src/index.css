@@ -14,8 +14,19 @@ body {
     radial-gradient(circle at top right, rgba(96, 165, 250, 0.18), transparent 26%),
     linear-gradient(180deg, #ffffff 0%, #fff8fc 42%, #f3f8ff 100%);
   color: #0f172a;
-  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    "Plus Jakarta Sans",
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Noto Sans CJK SC",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
 }
 
 #root {

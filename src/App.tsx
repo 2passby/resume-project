@@ -11,6 +11,27 @@ const STORAGE_KEY = "resume_data";
 const MIN_PREVIEW_SCALE = 0.6;
 const MAX_PREVIEW_SCALE = 1.0;
 const PREVIEW_SCALE_STEP = 0.1;
+const PRINT_FONT_FAMILY =
+  '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif';
+const PRINT_PAGE_STYLE = `
+  @page {
+    margin: 0;
+    size: A4;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-family: ${PRINT_FONT_FAMILY};
+  }
+
+  [data-resume-preview="true"],
+  [data-resume-preview="true"] * {
+    font-family: ${PRINT_FONT_FAMILY} !important;
+  }
+`;
 
 function App() {
   const [data, setData] = useState<ResumeData>(() => {
@@ -35,6 +56,12 @@ function App() {
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
     documentTitle: `${data.basicInfo.name}_Resume`,
+    onBeforePrint: async () => {
+      if ("fonts" in document) {
+        await document.fonts.ready;
+      }
+    },
+    pageStyle: PRINT_PAGE_STYLE,
   });
 
   useEffect(() => {
