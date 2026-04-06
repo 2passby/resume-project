@@ -5,9 +5,14 @@ import type { ResumeData } from "./types";
 import { defaultResumeData } from "./types";
 import { useReactToPrint } from "react-to-print";
 import { ChevronUp, ChevronDown } from "lucide-react";
+import { storage } from "./utils";
+
+const STORAGE_KEY = "resume_data";
 
 function App() {
-  const [data, setData] = useState<ResumeData>(defaultResumeData);
+  const [data, setData] = useState<ResumeData>(() =>
+    storage.get(STORAGE_KEY, defaultResumeData)
+  );
   const componentRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -16,6 +21,10 @@ function App() {
     contentRef: componentRef,
     documentTitle: `${data.basicInfo.name}_Resume`,
   });
+
+  useEffect(() => {
+    storage.set(STORAGE_KEY, data);
+  }, [data]);
 
   useEffect(() => {
     if (!componentRef.current) return;
