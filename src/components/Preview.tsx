@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import type { ResumeData } from "../types";
 
 interface PreviewProps {
@@ -6,7 +6,7 @@ interface PreviewProps {
 }
 
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
-  const { basicInfo, skills, experiences, projects } = data;
+  const { basicInfo, skills, experiences, projects, honors } = data;
 
   return (
     <div
@@ -18,7 +18,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         <h1 className="text-[40px] font-bold text-primary tracking-widest mb-4">
           {basicInfo.name}
         </h1>
-        <div className="text-[15px] text-gray-700 mb-3 flex justify-center items-center gap-2">
+        <div className="text-[15px] text-gray-700 mb-3 flex flex-col justify-center items-center gap-1.5">
           {basicInfo.educations.map((edu) => (
             <span key={edu.id}>
               {edu.timePeriod} <span className="mx-1">/</span>{" "}
@@ -140,6 +140,26 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                     </li>
                   ))}
                 </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      {/* Honors */}
+      {honors.length > 0 && (
+        <div className="mb-6">
+          <SectionTitle title="荣誉奖项" subtitle="HONORS & AWARDS" />
+          <div className="space-y-1.5 mt-3">
+            {honors.map((honor) => (
+              <div
+                key={honor.id}
+                className="flex items-center text-[13px] text-gray-800"
+              >
+                <span className="text-primary mr-1.5 text-[10px]">●</span>
+                <span className="w-24 text-gray-500 font-medium">
+                  {honor.date}
+                </span>
+                <span className="font-bold flex-1">{honor.name}</span>
               </div>
             ))}
           </div>

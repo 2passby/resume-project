@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import type { ResumeData } from "../types";
 import { defaultResumeData } from "../types";
-import { FileDown, Save, Trash2, LayoutTemplate } from "lucide-react";
+import {
+  FileDown,
+  Save,
+  Trash2,
+  LayoutTemplate,
+  ChevronDown,
+  ChevronRight,
+  Plus,
+  X,
+} from "lucide-react";
 
 interface SidebarProps {
   data: ResumeData;
@@ -10,6 +19,20 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
+  const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>
+  >({
+    basicInfo: true,
+    skills: false,
+    experiences: false,
+    projects: false,
+    honors: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
+
   const handleReset = () => {
     if (window.confirm("确定要清空所有数据吗？")) {
       setData({
@@ -23,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         skills: [],
         experiences: [],
         projects: [],
+        honors: [],
       });
     }
   };
@@ -47,6 +71,229 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
       const newEdu = [...prev.basicInfo.educations];
       newEdu[index] = { ...newEdu[index], [field]: value };
       return { ...prev, basicInfo: { ...prev.basicInfo, educations: newEdu } };
+    });
+  };
+
+  const addEducation = () => {
+    setData((prev) => ({
+      ...prev,
+      basicInfo: {
+        ...prev.basicInfo,
+        educations: [
+          ...prev.basicInfo.educations,
+          {
+            id: Date.now().toString(),
+            university: "",
+            major: "",
+            timePeriod: "",
+          },
+        ],
+      },
+    }));
+  };
+
+  const removeEducation = (index: number) => {
+    setData((prev) => {
+      const newEdu = [...prev.basicInfo.educations];
+      newEdu.splice(index, 1);
+      return { ...prev, basicInfo: { ...prev.basicInfo, educations: newEdu } };
+    });
+  };
+
+  const handleSkillChange = (index: number, value: string) => {
+    setData((prev) => {
+      const newSkills = [...prev.skills];
+      newSkills[index] = { ...newSkills[index], content: value };
+      return { ...prev, skills: newSkills };
+    });
+  };
+
+  const addSkill = () => {
+    setData((prev) => ({
+      ...prev,
+      skills: [...prev.skills, { id: Date.now().toString(), content: "" }],
+    }));
+  };
+
+  const removeSkill = (index: number) => {
+    setData((prev) => {
+      const newSkills = [...prev.skills];
+      newSkills.splice(index, 1);
+      return { ...prev, skills: newSkills };
+    });
+  };
+
+  const handleExperienceChange = (
+    index: number,
+    field: string,
+    value: string | string[]
+  ) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      newExp[index] = { ...newExp[index], [field]: value };
+      return { ...prev, experiences: newExp };
+    });
+  };
+
+  const handleExperienceDetailChange = (
+    expIndex: number,
+    detailIndex: number,
+    value: string
+  ) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      const newDetails = [...newExp[expIndex].details];
+      newDetails[detailIndex] = value;
+      newExp[expIndex] = { ...newExp[expIndex], details: newDetails };
+      return { ...prev, experiences: newExp };
+    });
+  };
+
+  const addExperienceDetail = (expIndex: number) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      newExp[expIndex] = {
+        ...newExp[expIndex],
+        details: [...newExp[expIndex].details, ""],
+      };
+      return { ...prev, experiences: newExp };
+    });
+  };
+
+  const removeExperienceDetail = (expIndex: number, detailIndex: number) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      const newDetails = [...newExp[expIndex].details];
+      newDetails.splice(detailIndex, 1);
+      newExp[expIndex] = { ...newExp[expIndex], details: newDetails };
+      return { ...prev, experiences: newExp };
+    });
+  };
+
+  const addExperience = () => {
+    setData((prev) => ({
+      ...prev,
+      experiences: [
+        ...prev.experiences,
+        {
+          id: Date.now().toString(),
+          timePeriod: "",
+          company: "",
+          role: "",
+          description: "",
+          details: [""],
+          technologies: [],
+        },
+      ],
+    }));
+  };
+
+  const removeExperience = (index: number) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      newExp.splice(index, 1);
+      return { ...prev, experiences: newExp };
+    });
+  };
+
+  const handleProjectChange = (
+    index: number,
+    field: string,
+    value: string | string[]
+  ) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      newProj[index] = { ...newProj[index], [field]: value };
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const handleProjectDetailChange = (
+    projIndex: number,
+    detailIndex: number,
+    value: string
+  ) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      const newDetails = [...newProj[projIndex].details];
+      newDetails[detailIndex] = value;
+      newProj[projIndex] = { ...newProj[projIndex], details: newDetails };
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const addProjectDetail = (projIndex: number) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      newProj[projIndex] = {
+        ...newProj[projIndex],
+        details: [...newProj[projIndex].details, ""],
+      };
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const removeProjectDetail = (projIndex: number, detailIndex: number) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      const newDetails = [...newProj[projIndex].details];
+      newDetails.splice(detailIndex, 1);
+      newProj[projIndex] = { ...newProj[projIndex], details: newDetails };
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const addProject = () => {
+    setData((prev) => ({
+      ...prev,
+      projects: [
+        ...prev.projects,
+        {
+          id: Date.now().toString(),
+          name: "",
+          description: "",
+          details: [""],
+          technologies: [],
+        },
+      ],
+    }));
+  };
+
+  const removeProject = (index: number) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      newProj.splice(index, 1);
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const handleHonorChange = (index: number, field: string, value: string) => {
+    setData((prev) => {
+      const newHonors = [...prev.honors];
+      newHonors[index] = { ...newHonors[index], [field]: value };
+      return { ...prev, honors: newHonors };
+    });
+  };
+
+  const addHonor = () => {
+    setData((prev) => ({
+      ...prev,
+      honors: [
+        ...prev.honors,
+        {
+          id: Date.now().toString(),
+          date: "",
+          name: "",
+        },
+      ],
+    }));
+  };
+
+  const removeHonor = (index: number) => {
+    setData((prev) => {
+      const newHonors = [...prev.honors];
+      newHonors.splice(index, 1);
+      return { ...prev, honors: newHonors };
     });
   };
 
@@ -93,129 +340,546 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
       <div className="p-6 overflow-y-auto flex-1 space-y-6">
         {/* Basic Info Section */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-gray-800 font-bold text-lg border-b pb-2">
-            <span className="text-xl">▾</span> 基本信息
+          <div
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            onClick={() => toggleSection("basicInfo")}
+          >
+            <div className="flex items-center gap-2">
+              {expandedSections.basicInfo ? (
+                <ChevronDown size={20} />
+              ) : (
+                <ChevronRight size={20} />
+              )}{" "}
+              基本信息
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                姓名
-              </label>
-              <input
-                type="text"
-                value={data.basicInfo.name}
-                onChange={(e) => handleBasicInfoChange("name", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                证件照 (可选)
-              </label>
-              <button className="w-full p-2 border border-dashed border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">
-                ↑ Click to Upload
-              </button>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                邮箱
-              </label>
-              <input
-                type="email"
-                value={data.basicInfo.email}
-                onChange={(e) => handleBasicInfoChange("email", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                联系方式
-              </label>
-              <input
-                type="text"
-                value={data.basicInfo.phone}
-                onChange={(e) => handleBasicInfoChange("phone", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                个人网站
-              </label>
-              <input
-                type="text"
-                value={data.basicInfo.website}
-                onChange={(e) =>
-                  handleBasicInfoChange("website", e.target.value)
-                }
-                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-              />
-            </div>
 
-            {/* Educations */}
-            {data.basicInfo.educations.map((edu, idx) => (
-              <React.Fragment key={edu.id}>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    教育背景
-                  </label>
-                  <input
-                    type="text"
-                    value={edu.university}
-                    onChange={(e) =>
-                      handleEducationChange(idx, "university", e.target.value)
-                    }
-                    className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                  />
+          {expandedSections.basicInfo && (
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  姓名
+                </label>
+                <input
+                  type="text"
+                  value={data.basicInfo.name}
+                  onChange={(e) =>
+                    handleBasicInfoChange("name", e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  证件照 (可选)
+                </label>
+                <button className="w-full p-2 border border-dashed border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">
+                  ↑ Click to Upload
+                </button>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  邮箱
+                </label>
+                <input
+                  type="email"
+                  value={data.basicInfo.email}
+                  onChange={(e) =>
+                    handleBasicInfoChange("email", e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  联系方式
+                </label>
+                <input
+                  type="text"
+                  value={data.basicInfo.phone}
+                  onChange={(e) =>
+                    handleBasicInfoChange("phone", e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  个人网站
+                </label>
+                <input
+                  type="text"
+                  value={data.basicInfo.website}
+                  onChange={(e) =>
+                    handleBasicInfoChange("website", e.target.value)
+                  }
+                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                />
+              </div>
+
+              {/* Educations */}
+              <div className="col-span-2 mt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  教育经历
+                </label>
+                <div className="space-y-3">
+                  {data.basicInfo.educations.map((edu, idx) => (
+                    <div
+                      key={edu.id}
+                      className="flex gap-2 items-start bg-gray-50 p-3 rounded-md relative border border-gray-200"
+                    >
+                      <button
+                        onClick={() => removeEducation(idx)}
+                        className="absolute -top-2 -right-2 p-1 bg-white text-red-500 hover:bg-red-50 rounded-full border border-gray-200 shadow-sm"
+                        title="删除此项"
+                      >
+                        <X size={14} />
+                      </button>
+                      <div className="grid grid-cols-2 gap-2 flex-1">
+                        <div className="col-span-2">
+                          <input
+                            type="text"
+                            value={edu.university}
+                            onChange={(e) =>
+                              handleEducationChange(
+                                idx,
+                                "university",
+                                e.target.value
+                              )
+                            }
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            placeholder="学校名称 (如: 电子科技大学 (985))"
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            value={edu.major}
+                            onChange={(e) =>
+                              handleEducationChange(
+                                idx,
+                                "major",
+                                e.target.value
+                              )
+                            }
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            placeholder="专业"
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            value={edu.timePeriod}
+                            onChange={(e) =>
+                              handleEducationChange(
+                                idx,
+                                "timePeriod",
+                                e.target.value
+                              )
+                            }
+                            className="w-full p-1.5 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                            placeholder="起止时间 (如: 本科 2021-2025)"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    专业
-                  </label>
-                  <input
-                    type="text"
-                    value={edu.major}
-                    onChange={(e) =>
-                      handleEducationChange(idx, "major", e.target.value)
-                    }
-                    className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    起止时间
-                  </label>
-                  <input
-                    type="text"
-                    value={edu.timePeriod}
-                    onChange={(e) =>
-                      handleEducationChange(idx, "timePeriod", e.target.value)
-                    }
-                    className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                  />
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
+                <button
+                  onClick={addEducation}
+                  className="mt-3 flex items-center justify-center w-full gap-1 py-1.5 text-xs text-primary bg-blue-50 hover:bg-blue-100 rounded-md transition-colors"
+                >
+                  <Plus size={14} /> 添加教育经历
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Collapsible Sections Placeholders */}
-        {[
-          { title: "技术栈", key: "skills" },
-          { title: "实习经历", key: "experiences" },
-          { title: "项目经历", key: "projects" },
-          { title: "荣誉奖项", key: "honors" },
-        ].map((section) => (
-          <div key={section.key} className="space-y-4">
-            <div className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">▸</span> {section.title}
-              </div>
-              <span className="text-gray-400">👁</span>
+        <div className="space-y-4">
+          <div
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            onClick={() => toggleSection("skills")}
+          >
+            <div className="flex items-center gap-2">
+              {expandedSections.skills ? (
+                <ChevronDown size={20} />
+              ) : (
+                <ChevronRight size={20} />
+              )}{" "}
+              技术栈
             </div>
-            {/* If we were to expand these, we would map over data[section.key] and render inputs similar to educations */}
           </div>
-        ))}
+          {expandedSections.skills && (
+            <div className="space-y-3 pt-2">
+              {data.skills.map((skill, idx) => (
+                <div key={skill.id} className="flex gap-2 items-start">
+                  <textarea
+                    value={skill.content}
+                    onChange={(e) => handleSkillChange(idx, e.target.value)}
+                    className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                    placeholder="请输入技能描述..."
+                  />
+                  <button
+                    onClick={() => removeSkill(idx)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    title="删除此项"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={addSkill}
+                className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
+              >
+                <Plus size={16} /> 添加技能
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <div
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            onClick={() => toggleSection("experiences")}
+          >
+            <div className="flex items-center gap-2">
+              {expandedSections.experiences ? (
+                <ChevronDown size={20} />
+              ) : (
+                <ChevronRight size={20} />
+              )}{" "}
+              实习经历
+            </div>
+          </div>
+          {expandedSections.experiences && (
+            <div className="space-y-6 pt-2">
+              {data.experiences.map((exp, idx) => (
+                <div
+                  key={exp.id}
+                  className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
+                >
+                  <button
+                    onClick={() => removeExperience(idx)}
+                    className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-100 rounded"
+                    title="删除此经历"
+                  >
+                    <X size={16} />
+                  </button>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        公司
+                      </label>
+                      <input
+                        type="text"
+                        value={exp.company}
+                        onChange={(e) =>
+                          handleExperienceChange(idx, "company", e.target.value)
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        职位
+                      </label>
+                      <input
+                        type="text"
+                        value={exp.role}
+                        onChange={(e) =>
+                          handleExperienceChange(idx, "role", e.target.value)
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        时间
+                      </label>
+                      <input
+                        type="text"
+                        value={exp.timePeriod}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            idx,
+                            "timePeriod",
+                            e.target.value
+                          )
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        技术栈 (用逗号分隔)
+                      </label>
+                      <input
+                        type="text"
+                        value={exp.technologies?.join(", ")}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            idx,
+                            "technologies",
+                            e.target.value
+                              .split(",")
+                              .map((t) => t.trim())
+                              .filter(Boolean)
+                          )
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      简介
+                    </label>
+                    <textarea
+                      value={exp.description}
+                      onChange={(e) =>
+                        handleExperienceChange(
+                          idx,
+                          "description",
+                          e.target.value
+                        )
+                      }
+                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                      详细描述
+                    </label>
+                    <div className="space-y-2">
+                      {exp.details.map((detail, detailIdx) => (
+                        <div key={detailIdx} className="flex gap-2 items-start">
+                          <span className="text-gray-400 mt-2 text-xs">●</span>
+                          <textarea
+                            value={detail}
+                            onChange={(e) =>
+                              handleExperienceDetailChange(
+                                idx,
+                                detailIdx,
+                                e.target.value
+                              )
+                            }
+                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                          />
+                          <button
+                            onClick={() =>
+                              removeExperienceDetail(idx, detailIdx)
+                            }
+                            className="p-1.5 text-red-500 hover:bg-red-100 rounded mt-1"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => addExperienceDetail(idx)}
+                      className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary-dark"
+                    >
+                      <Plus size={14} /> 添加描述项
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={addExperience}
+                className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1 text-sm"
+              >
+                <Plus size={16} /> 添加实习经历
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <div
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            onClick={() => toggleSection("projects")}
+          >
+            <div className="flex items-center gap-2">
+              {expandedSections.projects ? (
+                <ChevronDown size={20} />
+              ) : (
+                <ChevronRight size={20} />
+              )}{" "}
+              项目经历
+            </div>
+          </div>
+          {expandedSections.projects && (
+            <div className="space-y-6 pt-2">
+              {data.projects.map((proj, idx) => (
+                <div
+                  key={proj.id}
+                  className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
+                >
+                  <button
+                    onClick={() => removeProject(idx)}
+                    className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-100 rounded"
+                    title="删除此项目"
+                  >
+                    <X size={16} />
+                  </button>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        项目名称
+                      </label>
+                      <input
+                        type="text"
+                        value={proj.name}
+                        onChange={(e) =>
+                          handleProjectChange(idx, "name", e.target.value)
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-medium text-gray-700 mb-1">
+                        技术栈 (用逗号分隔)
+                      </label>
+                      <input
+                        type="text"
+                        value={proj.technologies?.join(", ")}
+                        onChange={(e) =>
+                          handleProjectChange(
+                            idx,
+                            "technologies",
+                            e.target.value
+                              .split(",")
+                              .map((t) => t.trim())
+                              .filter(Boolean)
+                          )
+                        }
+                        className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      简介
+                    </label>
+                    <textarea
+                      value={proj.description}
+                      onChange={(e) =>
+                        handleProjectChange(idx, "description", e.target.value)
+                      }
+                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-2">
+                      详细描述
+                    </label>
+                    <div className="space-y-2">
+                      {proj.details.map((detail, detailIdx) => (
+                        <div key={detailIdx} className="flex gap-2 items-start">
+                          <span className="text-gray-400 mt-2 text-xs">●</span>
+                          <textarea
+                            value={detail}
+                            onChange={(e) =>
+                              handleProjectDetailChange(
+                                idx,
+                                detailIdx,
+                                e.target.value
+                              )
+                            }
+                            className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none min-h-[60px]"
+                          />
+                          <button
+                            onClick={() => removeProjectDetail(idx, detailIdx)}
+                            className="p-1.5 text-red-500 hover:bg-red-100 rounded mt-1"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => addProjectDetail(idx)}
+                      className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary-dark"
+                    >
+                      <Plus size={14} /> 添加描述项
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={addProject}
+                className="w-full py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-lg hover:border-primary hover:text-primary transition-colors flex items-center justify-center gap-1 text-sm"
+              >
+                <Plus size={16} /> 添加项目经历
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <div
+            className="flex items-center justify-between text-gray-800 font-bold text-lg border-b pb-2 cursor-pointer hover:bg-gray-50"
+            onClick={() => toggleSection("honors")}
+          >
+            <div className="flex items-center gap-2">
+              {expandedSections.honors ? (
+                <ChevronDown size={20} />
+              ) : (
+                <ChevronRight size={20} />
+              )}{" "}
+              荣誉奖项
+            </div>
+          </div>
+          {expandedSections.honors && (
+            <div className="space-y-3 pt-2">
+              {data.honors.map((honor, idx) => (
+                <div key={honor.id} className="flex gap-2 items-start">
+                  <input
+                    type="text"
+                    value={honor.date}
+                    onChange={(e) =>
+                      handleHonorChange(idx, "date", e.target.value)
+                    }
+                    className="w-24 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                    placeholder="时间"
+                  />
+                  <input
+                    type="text"
+                    value={honor.name}
+                    onChange={(e) =>
+                      handleHonorChange(idx, "name", e.target.value)
+                    }
+                    className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                    placeholder="奖项名称"
+                  />
+                  <button
+                    onClick={() => removeHonor(idx)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded"
+                    title="删除此项"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+              <button
+                onClick={addHonor}
+                className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
+              >
+                <Plus size={16} /> 添加荣誉奖项
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Theme Config Placeholder */}
         <div className="pt-4 border-t border-gray-200 mt-8">

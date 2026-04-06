@@ -28,6 +28,12 @@ export interface Project {
   details: string[];
 }
 
+export interface Honor {
+  id: string;
+  date: string;
+  name: string;
+}
+
 export interface ResumeData {
   basicInfo: {
     name: string;
@@ -39,6 +45,7 @@ export interface ResumeData {
   skills: Skill[];
   experiences: Experience[];
   projects: Project[];
+  honors: Honor[];
 }
 
 export const defaultResumeData: ResumeData = {
@@ -110,6 +117,18 @@ export const defaultResumeData: ResumeData = {
         "从零自主搭建项目，接入 Eslint + Prettier + husky 工作流程，并利用 precommit 钩子实现代码质量的自动检查。",
         "利用 Echarts 的关系图对生成的依赖数据进行可视化渲染，自定义 formatter 调整节点标签并重写图例切换逻辑。",
       ],
+    },
+  ],
+  honors: [
+    {
+      id: "1",
+      date: "2023.10",
+      name: "国家奖学金 (Top 1%)",
+    },
+    {
+      id: "2",
+      date: "2022.11",
+      name: "全国大学生算法设计竞赛一等奖",
     },
   ],
 };

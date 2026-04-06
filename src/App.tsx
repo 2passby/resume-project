@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Sidebar from "./components/Sidebar";
 import Preview from "./components/Preview";
 import type { ResumeData } from "./types";
