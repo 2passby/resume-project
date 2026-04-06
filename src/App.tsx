@@ -10,9 +10,20 @@ import { storage } from "./utils";
 const STORAGE_KEY = "resume_data";
 
 function App() {
-  const [data, setData] = useState<ResumeData>(() =>
-    storage.get(STORAGE_KEY, defaultResumeData)
-  );
+  const [data, setData] = useState<ResumeData>(() => {
+    const savedData = storage.get<ResumeData>(STORAGE_KEY, defaultResumeData);
+    return {
+      ...defaultResumeData,
+      ...savedData,
+      theme: { ...defaultResumeData.theme, ...savedData.theme },
+      visible: { ...defaultResumeData.visible, ...savedData.visible },
+      sectionTitles: {
+        ...defaultResumeData.sectionTitles,
+        ...savedData.sectionTitles,
+      },
+      sectionOrder: savedData.sectionOrder || defaultResumeData.sectionOrder,
+    };
+  });
   const componentRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

@@ -166,4 +166,11 @@ export const defaultResumeData: ResumeData = {
     projects: true,
     honors: true,
   },
+  sectionTitles: {
+    skills: "相关技能",
+    experiences: "实习经历",
+    projects: "项目经历",
+    honors: "荣誉奖项",
+  },
+  sectionOrder: ["skills", "experiences", "projects", "honors"],
 };
