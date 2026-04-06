@@ -407,7 +407,13 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     }
   };
 
-  const renderSection = (id: string) => {
+  const renderSection = (
+    id: string,
+    dragProps?: {
+      attributes: Record<string, unknown>;
+      listeners: Record<string, unknown>;
+    }
+  ) => {
     switch (id) {
       case "skills":
         return (
@@ -416,21 +422,29 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
           >
             <div
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+              {...dragProps?.attributes}
+              {...dragProps?.listeners}
+              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
               onClick={() => toggleSection("skills")}
             >
               <div className="flex items-center gap-2 flex-1">
+                <GripVertical
+                  size={18}
+                  className="text-gray-400 outline-none"
+                />
                 <input
                   type="text"
                   value={data.sectionTitles?.skills || "相关技能"}
                   onChange={(e) => handleTitleChange("skills", e.target.value)}
                   onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
                 />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={(e) => toggleVisibility("skills", e)}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className={`p-1.5 rounded-md transition-colors ${
                     data.visible?.skills !== false
                       ? "text-primary hover:bg-blue-50"
@@ -484,10 +498,16 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
           >
             <div
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+              {...dragProps?.attributes}
+              {...dragProps?.listeners}
+              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
               onClick={() => toggleSection("experiences")}
             >
               <div className="flex items-center gap-2 flex-1">
+                <GripVertical
+                  size={18}
+                  className="text-gray-400 outline-none"
+                />
                 <input
                   type="text"
                   value={data.sectionTitles?.experiences || "实习经历"}
@@ -495,12 +515,14 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                     handleTitleChange("experiences", e.target.value)
                   }
                   onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
                 />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={(e) => toggleVisibility("experiences", e)}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className={`p-1.5 rounded-md transition-colors ${
                     data.visible?.experiences !== false
                       ? "text-primary hover:bg-blue-50"
@@ -692,10 +714,16 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
           >
             <div
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+              {...dragProps?.attributes}
+              {...dragProps?.listeners}
+              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
               onClick={() => toggleSection("projects")}
             >
               <div className="flex items-center gap-2 flex-1">
+                <GripVertical
+                  size={18}
+                  className="text-gray-400 outline-none"
+                />
                 <input
                   type="text"
                   value={data.sectionTitles?.projects || "项目经历"}
@@ -703,12 +731,14 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                     handleTitleChange("projects", e.target.value)
                   }
                   onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
                 />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={(e) => toggleVisibility("projects", e)}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className={`p-1.5 rounded-md transition-colors ${
                     data.visible?.projects !== false
                       ? "text-primary hover:bg-blue-50"
@@ -864,21 +894,29 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             className="space-y-4 bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm"
           >
             <div
-              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-pointer hover:bg-gray-50"
+              {...dragProps?.attributes}
+              {...dragProps?.listeners}
+              className="flex items-center justify-between text-gray-800 font-bold text-lg border-b border-gray-100 p-4 cursor-grab active:cursor-grabbing hover:bg-gray-50"
               onClick={() => toggleSection("honors")}
             >
               <div className="flex items-center gap-2 flex-1">
+                <GripVertical
+                  size={18}
+                  className="text-gray-400 outline-none"
+                />
                 <input
                   type="text"
                   value={data.sectionTitles?.honors || "荣誉奖项"}
                   onChange={(e) => handleTitleChange("honors", e.target.value)}
                   onClick={(e) => e.stopPropagation()}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
                 />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={(e) => toggleVisibility("honors", e)}
+                  onPointerDown={(e) => e.stopPropagation()}
                   className={`p-1.5 rounded-md transition-colors ${
                     data.visible?.honors !== false
                       ? "text-primary hover:bg-blue-50"
@@ -960,15 +998,11 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     };
 
     return (
-      <div ref={setNodeRef} style={style} className="relative group">
-        <div
-          {...attributes}
-          {...listeners}
-          className="absolute -left-3 top-4 p-1 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-600 z-10"
-        >
-          <GripVertical size={16} />
-        </div>
-        {renderSection(id)}
+      <div ref={setNodeRef} style={style}>
+        {renderSection(id, {
+          attributes: attributes as unknown as Record<string, unknown>,
+          listeners: listeners as unknown as Record<string, unknown>,
+        })}
       </div>
     );
   };
