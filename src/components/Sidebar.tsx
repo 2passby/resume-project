@@ -407,6 +407,48 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     }
   };
 
+  // Use local state for title input to prevent focus loss during typing
+  const TitleInput = ({
+    sectionKey,
+    value,
+    placeholder,
+  }: {
+    sectionKey: keyof typeof defaultResumeData.sectionTitles;
+    value: string;
+    placeholder: string;
+  }) => {
+    const [localValue, setLocalValue] = useState(value);
+
+    // Sync with external value if it changes from outside
+    React.useEffect(() => {
+      setLocalValue(value);
+    }, [value]);
+
+    const handleBlur = () => {
+      handleTitleChange(sectionKey, localValue);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        e.currentTarget.blur();
+      }
+    };
+
+    return (
+      <input
+        type="text"
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+        className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+        placeholder={placeholder}
+      />
+    );
+  };
+
   const renderSection = (
     id: string,
     dragProps?: {
@@ -432,13 +474,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   size={18}
                   className="text-gray-400 outline-none"
                 />
-                <input
-                  type="text"
-                  value={data.sectionTitles?.skills || "相关技能"}
-                  onChange={(e) => handleTitleChange("skills", e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+                <TitleInput
+                  sectionKey="skills"
+                  value={data.sectionTitles?.skills ?? "相关技能"}
+                  placeholder="相关技能"
                 />
               </div>
               <div className="flex items-center gap-1">
@@ -508,15 +547,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   size={18}
                   className="text-gray-400 outline-none"
                 />
-                <input
-                  type="text"
-                  value={data.sectionTitles?.experiences || "实习经历"}
-                  onChange={(e) =>
-                    handleTitleChange("experiences", e.target.value)
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+                <TitleInput
+                  sectionKey="experiences"
+                  value={data.sectionTitles?.experiences ?? "实习经历"}
+                  placeholder="实习经历"
                 />
               </div>
               <div className="flex items-center gap-1">
@@ -724,15 +758,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   size={18}
                   className="text-gray-400 outline-none"
                 />
-                <input
-                  type="text"
-                  value={data.sectionTitles?.projects || "项目经历"}
-                  onChange={(e) =>
-                    handleTitleChange("projects", e.target.value)
-                  }
-                  onClick={(e) => e.stopPropagation()}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+                <TitleInput
+                  sectionKey="projects"
+                  value={data.sectionTitles?.projects ?? "项目经历"}
+                  placeholder="项目经历"
                 />
               </div>
               <div className="flex items-center gap-1">
@@ -904,13 +933,10 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   size={18}
                   className="text-gray-400 outline-none"
                 />
-                <input
-                  type="text"
-                  value={data.sectionTitles?.honors || "荣誉奖项"}
-                  onChange={(e) => handleTitleChange("honors", e.target.value)}
-                  onClick={(e) => e.stopPropagation()}
-                  onPointerDown={(e) => e.stopPropagation()}
-                  className="font-bold text-lg bg-transparent border-none outline-none focus:ring-1 focus:ring-primary rounded px-1 -ml-1 w-32"
+                <TitleInput
+                  sectionKey="honors"
+                  value={data.sectionTitles?.honors ?? "荣誉奖项"}
+                  placeholder="荣誉奖项"
                 />
               </div>
               <div className="flex items-center gap-1">

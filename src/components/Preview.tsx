@@ -34,7 +34,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         return (
           <div key="skills" className="mb-6">
             <SectionTitle
-              title={sectionTitles?.skills || "相关技能"}
+              title={sectionTitles?.skills ?? "相关技能"}
               subtitle="TECH STACK"
             />
             <ul className="list-none pl-0 text-[13px] space-y-1.5 leading-relaxed text-gray-800 px-2 mt-3">
@@ -57,7 +57,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         return (
           <div key="experiences" className="mb-6">
             <SectionTitle
-              title={sectionTitles?.experiences || "实习经历"}
+              title={sectionTitles?.experiences ?? "实习经历"}
               subtitle="INTERNSHIP EXPERIENCE"
             />
             <div className="space-y-5">
@@ -133,7 +133,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         return (
           <div key="projects" className="mb-6">
             <SectionTitle
-              title={sectionTitles?.projects || "项目经历"}
+              title={sectionTitles?.projects ?? "项目经历"}
               subtitle="PROJECTS"
             />
             <div className="space-y-5">
@@ -196,7 +196,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         return (
           <div key="honors" className="mb-6">
             <SectionTitle
-              title={sectionTitles?.honors || "荣誉奖项"}
+              title={sectionTitles?.honors ?? "荣誉奖项"}
               subtitle="HONORS & AWARDS"
             />
             <div className="space-y-1.5 mt-3 px-2">
