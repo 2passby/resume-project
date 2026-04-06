@@ -39,7 +39,7 @@ export interface ResumeData {
     name: string;
     email: string;
     phone: string;
-    website: string;
+    website?: string;
     educations: Education[];
   };
   skills: Skill[];

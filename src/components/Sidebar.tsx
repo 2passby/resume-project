@@ -391,19 +391,21 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  联系方式
-                </label>
-                <input
-                  type="text"
-                  value={data.basicInfo.phone}
-                  onChange={(e) =>
-                    handleBasicInfoChange("phone", e.target.value)
-                  }
-                  className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                />
-              </div>
-              <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                联系方式
+              </label>
+              <input
+                type="text"
+                value={data.basicInfo.phone}
+                onChange={(e) =>
+                  handleBasicInfoChange("phone", e.target.value)
+                }
+                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+              />
+            </div>
+            
+            {data.basicInfo.website !== undefined ? (
+              <div className="col-span-2 relative group">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   个人网站
                 </label>
@@ -415,9 +417,30 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   }
                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                 />
+                <button
+                  onClick={() => {
+                    const newBasicInfo = { ...data.basicInfo };
+                    delete newBasicInfo.website;
+                    setData(prev => ({ ...prev, basicInfo: newBasicInfo }));
+                  }}
+                  className="absolute right-2 top-8 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-50 rounded"
+                  title="删除个人网站"
+                >
+                  <X size={14} />
+                </button>
               </div>
+            ) : (
+              <div className="col-span-2">
+                <button
+                  onClick={() => handleBasicInfoChange("website", "")}
+                  className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
+                >
+                  <Plus size={16} /> 添加个人网站
+                </button>
+              </div>
+            )}
 
-              {/* Educations */}
+            {/* Educations */}
               <div className="col-span-2 mt-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   教育经历

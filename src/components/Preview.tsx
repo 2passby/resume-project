@@ -15,7 +15,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
     >
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-[40px] font-bold text-primary tracking-widest mb-4">
+        <h1 className="text-[20px] font-bold text-primary tracking-widest mb-2">
           {basicInfo.name}
         </h1>
         <div className="text-[15px] text-gray-700 mb-3 flex flex-col justify-center items-center gap-1.5">
@@ -31,9 +31,11 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         <div className="text-[13px] text-gray-600 flex justify-center gap-4">
           <span className="flex items-center gap-1">📞 {basicInfo.phone}</span>
           <span className="flex items-center gap-1">✉️ {basicInfo.email}</span>
-          <span className="flex items-center gap-1">
-            🔗 {basicInfo.website}
-          </span>
+          {basicInfo.website !== undefined && (
+            <span className="flex items-center gap-1">
+              🔗 {basicInfo.website}
+            </span>
+          )}
         </div>
       </div>
 
