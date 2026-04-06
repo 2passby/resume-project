@@ -50,7 +50,7 @@ export function Experiences({
       />
       <div className="space-y-5">
         {experiences.map((exp) => (
-          <div key={exp.id}>
+          <div key={exp.id} data-page-block="item">
             <div className={headerClassName} style={headerStyle}>
               <span className="text-[13px] text-gray-500 font-medium">
                 {exp.timePeriod}

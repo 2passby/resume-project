@@ -7,6 +7,11 @@ import { Experiences } from "./preview/Experiences";
 import { Projects } from "./preview/Projects";
 import { Honors } from "./preview/Honors";
 import { getResumeStylePreset } from "../resumeStylePresets";
+import {
+  A4_PAGE_HEIGHT_PX,
+  A4_PAGE_WIDTH_PX,
+  RESUME_FONT_FAMILY,
+} from "../constants/layout";
 
 interface PreviewProps {
   data: ResumeData;
@@ -32,12 +37,11 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   const detailColor = theme?.detailColor || preset.theme.detailColor;
   const previewClassName =
     styleId === "minimal"
-      ? "bg-white px-14 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-slate-900"
+      ? "relative bg-white px-14 pt-12 pb-14 text-slate-900"
       : styleId === "editorial"
-      ? "bg-[#fffdfd] px-12 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-slate-800"
-      : "bg-white px-12 pt-12 pb-14 min-h-[1131px] w-[800px] font-sans text-gray-800";
+      ? "relative bg-[#fffdfd] px-12 pt-12 pb-14 text-slate-800"
+      : "relative bg-white px-12 pt-12 pb-14 text-gray-800";
 
-  // Helper function to check if a section should be rendered
   const isVisible = (section: keyof typeof visible) => {
     return visible?.[section] !== false;
   };
@@ -130,6 +134,9 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       className={previewClassName}
       style={
         {
+          width: `${A4_PAGE_WIDTH_PX}px`,
+          minHeight: `${A4_PAGE_HEIGHT_PX}px`,
+          fontFamily: RESUME_FONT_FAMILY,
           "--color-primary": primaryColor,
           "--color-highlight": highlightColor,
           "--detail-font-size": detailFontSize,

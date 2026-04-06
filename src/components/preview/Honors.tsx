@@ -33,7 +33,7 @@ export function Honors({ honors, title, isVisible, styleId }: HonorsProps) {
       />
       <div className={listClassName}>
         {honors.map((honor) => (
-          <div key={honor.id} className={rowClassName}>
+          <div key={honor.id} className={rowClassName} data-page-block="item">
             <span
               className="mr-2 text-[8px]"
               style={{ color: "var(--color-primary)" }}

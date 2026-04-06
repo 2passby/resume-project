@@ -6,15 +6,20 @@ import { defaultResumeData } from "./types";
 import { useReactToPrint } from "react-to-print";
 import { ChevronUp, ChevronDown, Minus, Plus } from "lucide-react";
 import { storage } from "./utils";
+import {
+  A4_PAGE_HEIGHT_PX,
+  A4_PAGE_WIDTH_PX,
+  RESUME_FONT_FAMILY,
+} from "./constants/layout";
 
 const STORAGE_KEY = "resume_data";
 const MIN_PREVIEW_SCALE = 0.6;
 const MAX_PREVIEW_SCALE = 1.0;
 const PREVIEW_SCALE_STEP = 0.1;
-const PREVIEW_PAGE_HEIGHT = 1131;
+const PREVIEW_PAGE_HEIGHT = A4_PAGE_HEIGHT_PX;
+const PREVIEW_PAGE_WIDTH = A4_PAGE_WIDTH_PX;
 const PREVIEW_PAGE_TOP_PADDING = 48;
-const PRINT_FONT_FAMILY =
-  '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif';
+const PAGE_OVERFLOW_EPSILON = 1;
 const PRINT_PAGE_STYLE = `
   @page {
     margin: 0;
@@ -26,53 +31,73 @@ const PRINT_PAGE_STYLE = `
     background: #fff !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    font-family: ${PRINT_FONT_FAMILY};
+    font-family: ${RESUME_FONT_FAMILY};
   }
 
   [data-resume-preview="true"],
   [data-resume-preview="true"] * {
-    font-family: ${PRINT_FONT_FAMILY} !important;
+    font-family: ${RESUME_FONT_FAMILY} !important;
   }
 `;
+
+function getRelativeOffsetTop(element: HTMLElement, ancestor: HTMLElement) {
+  let top = 0;
+  let current: HTMLElement | null = element;
+
+  while (current && current !== ancestor) {
+    top += current.offsetTop;
+    current = current.offsetParent as HTMLElement | null;
+  }
+
+  return top;
+}
+
+function getPageCapacity(pageNumber: number) {
+  return pageNumber === 1
+    ? PREVIEW_PAGE_HEIGHT
+    : PREVIEW_PAGE_HEIGHT - PREVIEW_PAGE_TOP_PADDING;
+}
 
 function getPreviewPageOffsets(root: HTMLDivElement) {
   const blocks = Array.from(
     root.querySelectorAll<HTMLElement>("[data-page-block]")
   );
 
+  const totalHeight = root.scrollHeight;
   if (blocks.length === 0) {
-    const totalHeight = root.scrollHeight;
     const offsets = [0];
+    let currentPageStart = 0;
 
-    while (totalHeight - offsets[offsets.length - 1] > PREVIEW_PAGE_HEIGHT) {
-      offsets.push(offsets[offsets.length - 1] + PREVIEW_PAGE_HEIGHT);
+    while (
+      totalHeight - currentPageStart >
+      getPageCapacity(offsets.length) + PAGE_OVERFLOW_EPSILON
+    ) {
+      currentPageStart += getPageCapacity(offsets.length);
+      offsets.push(currentPageStart);
     }
 
     return offsets;
   }
 
-  const rootRect = root.getBoundingClientRect();
-  const totalHeight = root.scrollHeight;
   const offsets = [0];
   let currentPageStart = 0;
   let pendingHeadingTop: number | null = null;
 
   const pushOffset = (nextOffset: number) => {
-    const normalizedOffset = Math.round(nextOffset);
-
-    if (normalizedOffset <= currentPageStart) {
+    if (nextOffset <= currentPageStart) {
       return;
     }
 
-    offsets.push(normalizedOffset);
-    currentPageStart = normalizedOffset;
+    offsets.push(nextOffset);
+    currentPageStart = nextOffset;
   };
 
   for (const block of blocks) {
-    const blockRect = block.getBoundingClientRect();
-    const blockTop = blockRect.top - rootRect.top;
-    const blockBottom = blockTop + blockRect.height;
+    const blockTop = getRelativeOffsetTop(block, root);
+    const blockHeight = block.offsetHeight;
+    const blockBottom = blockTop + blockHeight;
     const blockType = block.dataset.pageBlock;
+    const currentPageCapacity = getPageCapacity(offsets.length);
 
     if (blockType === "heading") {
       pendingHeadingTop = blockTop;
@@ -80,8 +105,8 @@ function getPreviewPageOffsets(root: HTMLDivElement) {
     }
 
     if (
-      blockRect.height < PREVIEW_PAGE_HEIGHT &&
-      blockBottom - currentPageStart > PREVIEW_PAGE_HEIGHT
+      blockHeight < currentPageCapacity &&
+      blockBottom - currentPageStart > currentPageCapacity
     ) {
       pushOffset(
         pendingHeadingTop !== null && pendingHeadingTop > currentPageStart
@@ -93,8 +118,11 @@ function getPreviewPageOffsets(root: HTMLDivElement) {
     pendingHeadingTop = null;
   }
 
-  while (totalHeight - currentPageStart > PREVIEW_PAGE_HEIGHT) {
-    pushOffset(currentPageStart + PREVIEW_PAGE_HEIGHT);
+  while (
+    totalHeight - currentPageStart >
+    getPageCapacity(offsets.length) + PAGE_OVERFLOW_EPSILON
+  ) {
+    pushOffset(currentPageStart + getPageCapacity(offsets.length));
   }
 
   return offsets;
@@ -108,9 +136,10 @@ function getPageMetrics(
   const pageStart = pageOffsets[pageNumber - 1] ?? 0;
   const pageEnd = pageOffsets[pageNumber] ?? contentHeight;
   const pageTopPadding = pageNumber > 1 ? PREVIEW_PAGE_TOP_PADDING : 0;
+  const pageCapacity = getPageCapacity(pageNumber);
   const pageContentHeight = Math.max(
     0,
-    Math.min(PREVIEW_PAGE_HEIGHT - pageTopPadding, pageEnd - pageStart)
+    Math.min(pageCapacity, pageEnd - pageStart)
   );
 
   return {
@@ -135,7 +164,7 @@ function App() {
       sectionOrder: savedData.sectionOrder || defaultResumeData.sectionOrder,
     };
   });
-  const componentRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
   const printRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageOffsets, setPageOffsets] = useState([0]);
@@ -165,11 +194,11 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    if (!componentRef.current) {
+    if (!measureRef.current) {
       return;
     }
 
-    const previewNode = componentRef.current;
+    const previewNode = measureRef.current;
     const observedNodes = [
       previewNode,
       ...Array.from(
@@ -282,10 +311,19 @@ function App() {
           </div>
 
           <div
-            className="w-[800px] transform-gpu origin-top flex-shrink-0 transition-transform duration-200"
-            style={{ transform: `scale(${previewScale})` }}
+            className="transform-gpu origin-top flex-shrink-0 transition-transform duration-200"
+            style={{
+              width: `${PREVIEW_PAGE_WIDTH}px`,
+              transform: `scale(${previewScale})`,
+            }}
           >
-            <div className="relative h-[1131px] w-[800px] overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
+            <div
+              className="relative overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70"
+              style={{
+                width: `${PREVIEW_PAGE_WIDTH}px`,
+                height: `${PREVIEW_PAGE_HEIGHT}px`,
+              }}
+            >
               {activePageTopPadding > 0 && (
                 <div style={{ height: `${activePageTopPadding}px` }} />
               )}
@@ -299,12 +337,16 @@ function App() {
                     transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
                 >
-                  <Preview data={data} ref={componentRef} />
+                  <Preview data={data} />
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="pointer-events-none fixed left-[-10000px] top-0 invisible">
+        <Preview data={data} ref={measureRef} />
       </div>
 
       <div className="pointer-events-none fixed left-[-10000px] top-0 opacity-0">
@@ -317,8 +359,9 @@ function App() {
             return (
               <div
                 key={pageNumber}
-                className="relative w-[800px] overflow-hidden bg-white"
+                className="relative overflow-hidden bg-white"
                 style={{
+                  width: `${PREVIEW_PAGE_WIDTH}px`,
                   height: `${PREVIEW_PAGE_HEIGHT}px`,
                   breakAfter: pageNumber === totalPages ? "auto" : "page",
                   pageBreakAfter: pageNumber === totalPages ? "auto" : "always",
