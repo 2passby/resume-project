@@ -61,12 +61,31 @@ function getPageCapacity(pageNumber: number) {
         PREVIEW_PAGE_BOTTOM_PADDING;
 }
 
+function getPreviewContentHeight(root: HTMLDivElement, blocks: HTMLElement[]) {
+  const trackedBlockBottoms = blocks.map(
+    (block) => getRelativeOffsetTop(block, root) + block.offsetHeight
+  );
+  const untrackedChildBottoms = Array.from(root.children).flatMap((child) =>
+    child instanceof HTMLElement &&
+    child.querySelector("[data-page-block]") === null
+      ? [child.offsetTop + child.offsetHeight]
+      : []
+  );
+  const meaningfulBottom = Math.max(
+    0,
+    ...trackedBlockBottoms,
+    ...untrackedChildBottoms
+  );
+
+  return meaningfulBottom > 0 ? meaningfulBottom : root.scrollHeight;
+}
+
 function getPreviewPageOffsets(root: HTMLDivElement) {
   const blocks = Array.from(
     root.querySelectorAll<HTMLElement>("[data-page-block]")
   );
 
-  const totalHeight = root.scrollHeight;
+  const totalHeight = getPreviewContentHeight(root, blocks);
   if (blocks.length === 0) {
     const offsets = [0];
     let currentPageStart = 0;
@@ -129,6 +148,13 @@ function getPreviewPageOffsets(root: HTMLDivElement) {
   }
 
   return offsets;
+}
+
+function arePageOffsetsEqual(prev: number[], next: number[]) {
+  return (
+    prev.length === next.length &&
+    prev.every((value, index) => value === next[index])
+  );
 }
 
 function getPageMetrics(
@@ -202,15 +228,22 @@ function App() {
     }
 
     const previewNode = measureRef.current;
-    const observedNodes = [
-      previewNode,
-      ...Array.from(
-        previewNode.querySelectorAll<HTMLElement>("[data-page-block]")
-      ),
-    ];
+    const pageBlocks = Array.from(
+      previewNode.querySelectorAll<HTMLElement>("[data-page-block]")
+    );
+    const observedNodes = [previewNode, ...pageBlocks];
     const updatePageOffsets = () => {
-      setContentHeight(previewNode.scrollHeight);
-      setPageOffsets(getPreviewPageOffsets(previewNode));
+      const nextContentHeight = getPreviewContentHeight(
+        previewNode,
+        pageBlocks
+      );
+      const nextPageOffsets = getPreviewPageOffsets(previewNode);
+      setContentHeight((prev) =>
+        prev === nextContentHeight ? prev : nextContentHeight
+      );
+      setPageOffsets((prev) =>
+        arePageOffsetsEqual(prev, nextPageOffsets) ? prev : nextPageOffsets
+      );
     };
     const observer = new ResizeObserver(() => {
       updatePageOffsets();

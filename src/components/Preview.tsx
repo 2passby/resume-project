@@ -7,11 +7,7 @@ import { Experiences } from "./preview/Experiences";
 import { Projects } from "./preview/Projects";
 import { Honors } from "./preview/Honors";
 import { getResumeStylePreset } from "../resumeStylePresets";
-import {
-  A4_PAGE_HEIGHT_PX,
-  A4_PAGE_WIDTH_PX,
-  RESUME_FONT_FAMILY,
-} from "../constants/layout";
+import { A4_PAGE_WIDTH_PX, RESUME_FONT_FAMILY } from "../constants/layout";
 
 interface PreviewProps {
   data: ResumeData;
@@ -135,7 +131,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
       style={
         {
           width: `${A4_PAGE_WIDTH_PX}px`,
-          minHeight: `${A4_PAGE_HEIGHT_PX}px`,
           fontFamily: RESUME_FONT_FAMILY,
           "--color-primary": primaryColor,
           "--color-highlight": highlightColor,
