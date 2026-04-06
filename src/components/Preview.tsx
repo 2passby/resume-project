@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import type { ReactElement } from "react";
 import type { ResumeData } from "../types";
 import { BasicInfo } from "./preview/BasicInfo";
 import { Skills } from "./preview/Skills";
@@ -44,42 +45,54 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   const renderSection = (id: string) => {
     switch (id) {
       case "skills":
+        if (!isVisible("skills") || skills.length === 0) {
+          return null;
+        }
         return (
           <Skills
             key="skills"
             skills={skills}
             title={sectionTitles?.skills || "相关技能"}
-            isVisible={isVisible("skills")}
+            isVisible
             styleId={styleId}
           />
         );
       case "experiences":
+        if (!isVisible("experiences") || experiences.length === 0) {
+          return null;
+        }
         return (
           <Experiences
             key="experiences"
             experiences={experiences}
             title={sectionTitles?.experiences || "实习经历"}
-            isVisible={isVisible("experiences")}
+            isVisible
             styleId={styleId}
           />
         );
       case "projects":
+        if (!isVisible("projects") || projects.length === 0) {
+          return null;
+        }
         return (
           <Projects
             key="projects"
             projects={projects}
             title={sectionTitles?.projects || "项目经历"}
-            isVisible={isVisible("projects")}
+            isVisible
             styleId={styleId}
           />
         );
       case "honors":
+        if (!isVisible("honors") || honors.length === 0) {
+          return null;
+        }
         return (
           <Honors
             key="honors"
             honors={honors}
             title={sectionTitles?.honors || "荣誉奖项"}
-            isVisible={isVisible("honors")}
+            isVisible
             styleId={styleId}
           />
         );
@@ -87,6 +100,28 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         return null;
     }
   };
+  const sections = [
+    ...(isVisible("basicInfo")
+      ? [
+          {
+            id: "basicInfo",
+            content: (
+              <BasicInfo basicInfo={basicInfo} isVisible styleId={styleId} />
+            ),
+          },
+        ]
+      : []),
+    ...sectionOrder.reduce<Array<{ id: string; content: ReactElement }>>(
+      (items, id) => {
+        const content = renderSection(id);
+        if (content) {
+          items.push({ id, content });
+        }
+        return items;
+      },
+      []
+    ),
+  ];
 
   return (
     <div
@@ -101,13 +136,18 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         } as React.CSSProperties
       }
     >
-      <BasicInfo
-        basicInfo={basicInfo}
-        isVisible={isVisible("basicInfo")}
-        styleId={styleId}
-      />
-
-      {sectionOrder.map((id) => renderSection(id))}
+      {sections.map((section, index) => (
+        <div
+          key={section.id}
+          className={
+            styleId === "minimal" && index < sections.length - 1
+              ? "border-b border-slate-200"
+              : undefined
+          }
+        >
+          {section.content}
+        </div>
+      ))}
     </div>
   );
 });

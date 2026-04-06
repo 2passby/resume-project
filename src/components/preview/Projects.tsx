@@ -8,15 +8,20 @@ interface ProjectsProps {
   styleId: ResumeStyle;
 }
 
-export function Projects({ projects, title, isVisible, styleId }: ProjectsProps) {
+export function Projects({
+  projects,
+  title,
+  isVisible,
+  styleId,
+}: ProjectsProps) {
   if (!isVisible || projects.length === 0) return null;
 
   const headerClassName =
     styleId === "minimal"
-      ? "mb-2 flex items-baseline justify-between border-b border-slate-200 px-1 pb-2"
+      ? "mb-2 flex items-baseline justify-between px-1 pb-2"
       : styleId === "editorial"
-        ? "mb-2 flex items-baseline justify-between rounded-2xl px-3 py-2"
-        : "mb-1.5 flex items-baseline justify-between rounded-sm px-2 py-1";
+      ? "mb-2 flex items-baseline justify-between rounded-2xl px-3 py-2"
+      : "mb-1.5 flex items-baseline justify-between rounded-sm px-2 py-1";
   const headerStyle =
     styleId === "modern" || styleId === "editorial"
       ? ({ backgroundColor: "var(--color-highlight)" } as React.CSSProperties)
@@ -30,9 +35,7 @@ export function Projects({ projects, title, isVisible, styleId }: ProjectsProps)
       ? "mb-2 px-1 text-[13px] font-medium leading-relaxed text-slate-700"
       : "mb-1.5 px-2 text-[13px] font-medium text-gray-800";
   const listClassName =
-    styleId === "minimal"
-      ? "space-y-1.5 pl-0"
-      : "space-y-1 pl-0 px-2";
+    styleId === "minimal" ? "space-y-1.5 pl-0" : "space-y-1 pl-0 px-2";
 
   return (
     <div className="mb-6">
@@ -62,9 +65,7 @@ export function Projects({ projects, title, isVisible, styleId }: ProjectsProps)
                 ))}
               </div>
             </div>
-            <div className={descriptionClassName}>
-              {proj.description}
-            </div>
+            <div className={descriptionClassName}>{proj.description}</div>
             <ul
               className={listClassName}
               style={{

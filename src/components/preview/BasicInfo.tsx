@@ -11,7 +11,7 @@ export function BasicInfo({ basicInfo, isVisible, styleId }: BasicInfoProps) {
 
   const wrapperClassName =
     styleId === "minimal"
-      ? "mb-5 border-b border-slate-200 pb-4 text-left"
+      ? "mb-3 pb-2 text-left"
       : styleId === "editorial"
         ? "mb-5 pb-4 text-left"
         : "mb-4 pb-3 text-center";

@@ -13,7 +13,7 @@ export function Skills({ skills, title, isVisible, styleId }: SkillsProps) {
 
   const listClassName =
     styleId === "minimal"
-      ? "mt-3 space-y-2 pl-0 text-[13px] leading-relaxed text-slate-800"
+      ? "mt-1.5 space-y-2 pl-0 text-[13px] leading-relaxed text-slate-800"
       : styleId === "editorial"
         ? "mt-4 space-y-2.5 pl-0 text-[13px] leading-relaxed text-slate-800"
         : "mt-3 space-y-1.5 pl-0 px-2 text-[13px] leading-relaxed text-gray-800";
