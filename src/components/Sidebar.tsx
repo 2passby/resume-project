@@ -1260,7 +1260,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
           <h3 className="font-bold text-gray-800 mb-4">主题配置</h3>
           <div className="flex flex-col gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-4">
-              <span className="w-16">主题色调</span>
+              <span className="w-20">主题色调</span>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
@@ -1277,7 +1277,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="w-16">高亮色</span>
+              <span className="w-20">高亮色</span>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
@@ -1289,6 +1289,41 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 />
                 <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
                   {data.theme?.highlightColor || "#f0f9ff"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="w-20">详情字号</span>
+              <div className="flex items-center gap-2">
+                <select
+                  value={data.theme?.detailFontSize || "13px"}
+                  onChange={(e) =>
+                    handleThemeChange("detailFontSize", e.target.value)
+                  }
+                  className="p-1 border border-gray-300 rounded text-xs outline-none focus:ring-1 focus:ring-primary"
+                >
+                  <option value="12px">12px (极小)</option>
+                  <option value="13px">13px (标准)</option>
+                  <option value="14px">14px (中等)</option>
+                  <option value="15px">15px (偏大)</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="w-20">详情字体色</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data.theme?.detailColor || "#1f2937"}
+                  onChange={(e) =>
+                    handleThemeChange("detailColor", e.target.value)
+                  }
+                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                />
+                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                  {data.theme?.detailColor || "#1f2937"}
                 </span>
               </div>
             </div>

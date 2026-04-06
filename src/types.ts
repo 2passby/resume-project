@@ -37,6 +37,8 @@ export interface Honor {
 export interface ThemeConfig {
   primaryColor: string;
   highlightColor: string;
+  detailFontSize: string;
+  detailColor: string;
 }
 
 export interface SectionVisibility {
@@ -158,6 +160,8 @@ export const defaultResumeData: ResumeData = {
   theme: {
     primaryColor: "#0ea5e9",
     highlightColor: "#f0f9ff",
+    detailFontSize: "13px",
+    detailColor: "#1f2937", // text-gray-800
   },
   visible: {
     basicInfo: true,

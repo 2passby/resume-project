@@ -19,6 +19,8 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   } = data;
   const primaryColor = theme?.primaryColor || "#0ea5e9";
   const highlightColor = theme?.highlightColor || "#f0f9ff";
+  const detailFontSize = theme?.detailFontSize || "13px";
+  const detailColor = theme?.detailColor || "#1f2937";
 
   // Helper function to check if a section should be rendered
   const isVisible = (section: keyof typeof visible) => {
@@ -81,7 +83,13 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                   <div className="text-[13px] font-medium text-gray-800 mb-1.5 px-2">
                     {exp.description}
                   </div>
-                  <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800 px-2">
+                  <ul
+                    className="list-none pl-0 space-y-1 leading-relaxed px-2"
+                    style={{
+                      fontSize: "var(--detail-font-size)",
+                      color: "var(--detail-color)",
+                    }}
+                  >
                     {exp.details.map((detail, idx) => (
                       <li key={idx} className="flex items-start">
                         <span
@@ -159,7 +167,13 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                   <div className="text-[13px] font-medium text-gray-800 mb-1.5 px-2">
                     {proj.description}
                   </div>
-                  <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800 px-2">
+                  <ul
+                    className="list-none pl-0 space-y-1 leading-relaxed px-2"
+                    style={{
+                      fontSize: "var(--detail-font-size)",
+                      color: "var(--detail-color)",
+                    }}
+                  >
                     {proj.details.map((detail, idx) => (
                       <li key={idx} className="flex items-start">
                         <span
@@ -219,6 +233,8 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
         {
           "--color-primary": primaryColor,
           "--color-highlight": highlightColor,
+          "--detail-font-size": detailFontSize,
+          "--detail-color": detailColor,
         } as React.CSSProperties
       }
     >
