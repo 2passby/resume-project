@@ -11,7 +11,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
   return (
     <div
       ref={ref}
-      className="bg-white p-12 shadow-xl min-h-[1131px] w-[800px] font-sans text-gray-800"
+      className="bg-white p-12 min-h-[1131px] w-[800px] font-sans text-gray-800"
     >
       {/* Header */}
       <div className="text-center mb-8">
@@ -59,7 +59,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
           <SectionTitle title="实习经历" subtitle="INTERNSHIP EXPERIENCE" />
           <div className="space-y-5">
             {experiences.map((exp) => (
-              <div key={exp.id}>
+              <div key={exp.id} className="break-inside-avoid">
                 <div className="flex justify-between items-baseline mb-1.5">
                   <span className="text-[13px] text-gray-500 font-medium">
                     {exp.timePeriod}
@@ -113,7 +113,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
           <SectionTitle title="项目经历" subtitle="PROJECTS" />
           <div className="space-y-5">
             {projects.map((proj) => (
-              <div key={proj.id}>
+              <div key={proj.id} className="break-inside-avoid">
                 <div className="flex justify-between items-baseline mb-1.5">
                   <span className="text-[15px] font-bold text-gray-800">
                     {proj.name}
@@ -155,7 +155,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
             {honors.map((honor) => (
               <div
                 key={honor.id}
-                className="flex items-center text-[13px] text-gray-800"
+                className="flex items-center text-[13px] text-gray-800 break-inside-avoid"
               >
                 <span className="text-primary mr-1.5 text-[10px]">●</span>
                 <span className="w-24 text-gray-500 font-medium">

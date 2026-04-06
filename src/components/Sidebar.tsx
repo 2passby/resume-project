@@ -10,6 +10,7 @@ import {
   ChevronRight,
   Plus,
   X,
+  Copy,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -196,6 +197,21 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     });
   };
 
+  const duplicateExperience = (index: number) => {
+    setData((prev) => {
+      const newExp = [...prev.experiences];
+      const itemToCopy = newExp[index];
+      const clonedItem = {
+        ...itemToCopy,
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+        details: [...itemToCopy.details],
+        technologies: [...itemToCopy.technologies],
+      };
+      newExp.splice(index + 1, 0, clonedItem);
+      return { ...prev, experiences: newExp };
+    });
+  };
+
   const handleProjectChange = (
     index: number,
     field: string,
@@ -263,6 +279,21 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     setData((prev) => {
       const newProj = [...prev.projects];
       newProj.splice(index, 1);
+      return { ...prev, projects: newProj };
+    });
+  };
+
+  const duplicateProject = (index: number) => {
+    setData((prev) => {
+      const newProj = [...prev.projects];
+      const itemToCopy = newProj[index];
+      const clonedItem = {
+        ...itemToCopy,
+        id: Date.now().toString() + Math.random().toString(36).substring(2, 9),
+        details: [...itemToCopy.details],
+        technologies: [...itemToCopy.technologies],
+      };
+      newProj.splice(index + 1, 0, clonedItem);
       return { ...prev, projects: newProj };
     });
   };
@@ -391,56 +422,56 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                 />
               </div>
               <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                联系方式
-              </label>
-              <input
-                type="text"
-                value={data.basicInfo.phone}
-                onChange={(e) =>
-                  handleBasicInfoChange("phone", e.target.value)
-                }
-                className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-              />
-            </div>
-            
-            {data.basicInfo.website !== undefined ? (
-              <div className="col-span-2 relative group">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  个人网站
+                  联系方式
                 </label>
                 <input
                   type="text"
-                  value={data.basicInfo.website}
+                  value={data.basicInfo.phone}
                   onChange={(e) =>
-                    handleBasicInfoChange("website", e.target.value)
+                    handleBasicInfoChange("phone", e.target.value)
                   }
                   className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
                 />
-                <button
-                  onClick={() => {
-                    const newBasicInfo = { ...data.basicInfo };
-                    delete newBasicInfo.website;
-                    setData(prev => ({ ...prev, basicInfo: newBasicInfo }));
-                  }}
-                  className="absolute right-2 top-8 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-50 rounded"
-                  title="删除个人网站"
-                >
-                  <X size={14} />
-                </button>
               </div>
-            ) : (
-              <div className="col-span-2">
-                <button
-                  onClick={() => handleBasicInfoChange("website", "")}
-                  className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
-                >
-                  <Plus size={16} /> 添加个人网站
-                </button>
-              </div>
-            )}
 
-            {/* Educations */}
+              {data.basicInfo.website !== undefined ? (
+                <div className="col-span-2 relative group">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    个人网站
+                  </label>
+                  <input
+                    type="text"
+                    value={data.basicInfo.website}
+                    onChange={(e) =>
+                      handleBasicInfoChange("website", e.target.value)
+                    }
+                    className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                  />
+                  <button
+                    onClick={() => {
+                      const newBasicInfo = { ...data.basicInfo };
+                      delete newBasicInfo.website;
+                      setData((prev) => ({ ...prev, basicInfo: newBasicInfo }));
+                    }}
+                    className="absolute right-2 top-8 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-50 rounded"
+                    title="删除个人网站"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div className="col-span-2">
+                  <button
+                    onClick={() => handleBasicInfoChange("website", "")}
+                    className="flex items-center gap-1 text-sm text-primary hover:text-primary-dark"
+                  >
+                    <Plus size={16} /> 添加个人网站
+                  </button>
+                </div>
+              )}
+
+              {/* Educations */}
               <div className="col-span-2 mt-2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   教育经历
@@ -584,13 +615,22 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   key={exp.id}
                   className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
                 >
-                  <button
-                    onClick={() => removeExperience(idx)}
-                    className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-100 rounded"
-                    title="删除此经历"
-                  >
-                    <X size={16} />
-                  </button>
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    <button
+                      onClick={() => duplicateExperience(idx)}
+                      className="p-1.5 text-blue-500 hover:bg-blue-100 rounded"
+                      title="复制此经历"
+                    >
+                      <Copy size={16} />
+                    </button>
+                    <button
+                      onClick={() => removeExperience(idx)}
+                      className="p-1.5 text-red-500 hover:bg-red-100 rounded"
+                      title="删除此经历"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -745,13 +785,22 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
                   key={proj.id}
                   className="p-4 border border-gray-200 rounded-lg space-y-4 bg-gray-50 relative"
                 >
-                  <button
-                    onClick={() => removeProject(idx)}
-                    className="absolute top-2 right-2 p-1.5 text-red-500 hover:bg-red-100 rounded"
-                    title="删除此项目"
-                  >
-                    <X size={16} />
-                  </button>
+                  <div className="absolute top-2 right-2 flex gap-1">
+                    <button
+                      onClick={() => duplicateProject(idx)}
+                      className="p-1.5 text-blue-500 hover:bg-blue-100 rounded"
+                      title="复制此项目"
+                    >
+                      <Copy size={16} />
+                    </button>
+                    <button
+                      onClick={() => removeProject(idx)}
+                      className="p-1.5 text-red-500 hover:bg-red-100 rounded"
+                      title="删除此项目"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-2">
