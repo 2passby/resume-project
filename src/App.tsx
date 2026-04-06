@@ -12,6 +12,7 @@ const MIN_PREVIEW_SCALE = 0.6;
 const MAX_PREVIEW_SCALE = 1.0;
 const PREVIEW_SCALE_STEP = 0.1;
 const PREVIEW_PAGE_HEIGHT = 1131;
+const PREVIEW_PAGE_TOP_PADDING = 48;
 const PRINT_FONT_FAMILY =
   '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif';
 const PRINT_PAGE_STYLE = `
@@ -99,6 +100,26 @@ function getPreviewPageOffsets(root: HTMLDivElement) {
   return offsets;
 }
 
+function getPageMetrics(
+  pageOffsets: number[],
+  contentHeight: number,
+  pageNumber: number
+) {
+  const pageStart = pageOffsets[pageNumber - 1] ?? 0;
+  const pageEnd = pageOffsets[pageNumber] ?? contentHeight;
+  const pageTopPadding = pageNumber > 1 ? PREVIEW_PAGE_TOP_PADDING : 0;
+  const pageContentHeight = Math.max(
+    0,
+    Math.min(PREVIEW_PAGE_HEIGHT - pageTopPadding, pageEnd - pageStart)
+  );
+
+  return {
+    pageStart,
+    pageTopPadding,
+    pageContentHeight,
+  };
+}
+
 function App() {
   const [data, setData] = useState<ResumeData>(() => {
     const savedData = storage.get<ResumeData>(STORAGE_KEY, defaultResumeData);
@@ -115,21 +136,21 @@ function App() {
     };
   });
   const componentRef = useRef<HTMLDivElement>(null);
+  const printRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageOffsets, setPageOffsets] = useState([0]);
   const [contentHeight, setContentHeight] = useState(PREVIEW_PAGE_HEIGHT);
   const [previewScale, setPreviewScale] = useState(1);
   const totalPages = pageOffsets.length;
   const activePage = Math.min(currentPage, totalPages);
-  const activePageStart = pageOffsets[activePage - 1] ?? 0;
-  const activePageEnd = pageOffsets[activePage] ?? contentHeight;
-  const activePageContentHeight = Math.max(
-    0,
-    Math.min(PREVIEW_PAGE_HEIGHT, activePageEnd - activePageStart)
-  );
+  const {
+    pageStart: activePageStart,
+    pageTopPadding: activePageTopPadding,
+    pageContentHeight: activePageContentHeight,
+  } = getPageMetrics(pageOffsets, contentHeight, activePage);
 
   const handlePrint = useReactToPrint({
-    contentRef: componentRef,
+    contentRef: printRef,
     documentTitle: `${data.basicInfo.name}_Resume`,
     onBeforePrint: async () => {
       if ("fonts" in document) {
@@ -265,6 +286,9 @@ function App() {
             style={{ transform: `scale(${previewScale})` }}
           >
             <div className="relative h-[1131px] w-[800px] overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
+              {activePageTopPadding > 0 && (
+                <div style={{ height: `${activePageTopPadding}px` }} />
+              )}
               <div
                 className="overflow-hidden"
                 style={{ height: `${activePageContentHeight}px` }}
@@ -280,6 +304,44 @@ function App() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="pointer-events-none fixed left-[-10000px] top-0 opacity-0">
+        <div ref={printRef}>
+          {pageOffsets.map((_, index) => {
+            const pageNumber = index + 1;
+            const { pageStart, pageTopPadding, pageContentHeight } =
+              getPageMetrics(pageOffsets, contentHeight, pageNumber);
+
+            return (
+              <div
+                key={pageNumber}
+                className="relative w-[800px] overflow-hidden bg-white"
+                style={{
+                  height: `${PREVIEW_PAGE_HEIGHT}px`,
+                  breakAfter: pageNumber === totalPages ? "auto" : "page",
+                  pageBreakAfter: pageNumber === totalPages ? "auto" : "always",
+                }}
+              >
+                {pageTopPadding > 0 && (
+                  <div style={{ height: `${pageTopPadding}px` }} />
+                )}
+                <div
+                  className="overflow-hidden"
+                  style={{ height: `${pageContentHeight}px` }}
+                >
+                  <div
+                    style={{
+                      transform: `translateY(-${pageStart}px)`,
+                    }}
+                  >
+                    <Preview data={data} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
