@@ -6,12 +6,20 @@ interface PreviewProps {
 }
 
 const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
-  const { basicInfo, skills, experiences, projects, honors } = data;
+  const { basicInfo, skills, experiences, projects, honors, theme } = data;
+  const primaryColor = theme?.primaryColor || "#0ea5e9";
+  const highlightColor = theme?.highlightColor || "#f0f9ff";
 
   return (
     <div
       ref={ref}
       className="bg-white p-12 min-h-[1131px] w-[800px] font-sans text-gray-800"
+      style={
+        {
+          "--color-primary": primaryColor,
+          "--color-highlight": highlightColor,
+        } as React.CSSProperties
+      }
     >
       {/* Header */}
       <div className="text-center mb-8">
@@ -60,24 +68,33 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
           <div className="space-y-5">
             {experiences.map((exp) => (
               <div key={exp.id} className="break-inside-avoid">
-                <div className="flex justify-between items-baseline mb-1.5">
+                <div
+                  className="flex justify-between items-baseline mb-1.5 px-2 py-1 rounded-sm"
+                  style={{ backgroundColor: "var(--color-highlight)" }}
+                >
                   <span className="text-[13px] text-gray-500 font-medium">
                     {exp.timePeriod}
                   </span>
-                  <span className="text-[15px] font-bold text-primary flex-1 text-center">
+                  <span
+                    className="text-[15px] font-bold flex-1 text-center"
+                    style={{ color: "var(--color-primary)" }}
+                  >
                     {exp.company}
                   </span>
                   <span className="text-[13px] font-bold text-gray-800">
                     {exp.role}
                   </span>
                 </div>
-                <div className="text-[13px] font-medium text-gray-800 mb-1.5">
+                <div className="text-[13px] font-medium text-gray-800 mb-1.5 px-2">
                   {exp.description}
                 </div>
-                <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800">
+                <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800 px-2">
                   {exp.details.map((detail, idx) => (
                     <li key={idx} className="flex items-start">
-                      <span className="text-primary mr-1.5 text-[10px] mt-[5px]">
+                      <span
+                        className="mr-1.5 text-[10px] mt-[5px]"
+                        style={{ color: "var(--color-primary)" }}
+                      >
                         ●
                       </span>
                       <span className="flex-1">{detail}</span>
@@ -85,7 +102,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                   ))}
                 </ul>
                 {exp.technologies && exp.technologies.length > 0 && (
-                  <div className="mt-2 text-[13px] flex items-center">
+                  <div className="mt-2 text-[13px] flex items-center px-2">
                     <span className="font-bold mr-2 text-gray-800">
                       技术栈:
                     </span>
@@ -93,7 +110,11 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
                       {exp.technologies.map((tech, idx) => (
                         <span
                           key={idx}
-                          className="text-primary bg-blue-50 px-1.5 py-0.5 rounded text-[12px]"
+                          className="px-1.5 py-0.5 rounded text-[12px]"
+                          style={{
+                            color: "var(--color-primary)",
+                            backgroundColor: "var(--color-highlight)",
+                          }}
                         >
                           {tech}
                         </span>
@@ -114,28 +135,41 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ data }, ref) => {
           <div className="space-y-5">
             {projects.map((proj) => (
               <div key={proj.id} className="break-inside-avoid">
-                <div className="flex justify-between items-baseline mb-1.5">
-                  <span className="text-[15px] font-bold text-gray-800">
+                <div
+                  className="flex justify-between items-baseline mb-1.5 px-2 py-1 rounded-sm"
+                  style={{ backgroundColor: "var(--color-highlight)" }}
+                >
+                  <span
+                    className="text-[15px] font-bold"
+                    style={{ color: "var(--color-primary)" }}
+                  >
                     {proj.name}
                   </span>
                   <div className="flex gap-2">
                     {proj.technologies.map((tech, idx) => (
                       <span
                         key={idx}
-                        className="text-primary text-[12px] bg-blue-50 px-1.5 py-0.5 rounded"
+                        className="px-1.5 py-0.5 rounded text-[12px] font-medium"
+                        style={{
+                          color: "var(--color-primary)",
+                          backgroundColor: "white",
+                        }}
                       >
                         {tech}
                       </span>
                     ))}
                   </div>
                 </div>
-                <div className="text-[13px] font-medium text-gray-800 mb-1.5">
+                <div className="text-[13px] font-medium text-gray-800 mb-1.5 px-2">
                   {proj.description}
                 </div>
-                <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800">
+                <ul className="list-none pl-0 text-[13px] space-y-1 leading-relaxed text-gray-800 px-2">
                   {proj.details.map((detail, idx) => (
                     <li key={idx} className="flex items-start">
-                      <span className="text-primary mr-1.5 text-[10px] mt-[5px]">
+                      <span
+                        className="mr-1.5 text-[10px] mt-[5px]"
+                        style={{ color: "var(--color-primary)" }}
+                      >
                         ●
                       </span>
                       <span className="flex-1">{detail}</span>

@@ -48,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         experiences: [],
         projects: [],
         honors: [],
+        theme: defaultResumeData.theme,
       });
     }
   };
@@ -304,6 +305,16 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
       newHonors[index] = { ...newHonors[index], [field]: value };
       return { ...prev, honors: newHonors };
     });
+  };
+
+  const handleThemeChange = (
+    field: keyof typeof defaultResumeData.theme,
+    value: string
+  ) => {
+    setData((prev) => ({
+      ...prev,
+      theme: { ...prev.theme, [field]: value },
+    }));
   };
 
   const addHonor = () => {
@@ -956,9 +967,40 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
         {/* Theme Config Placeholder */}
         <div className="pt-4 border-t border-gray-200 mt-8">
           <h3 className="font-bold text-gray-800 mb-4">主题配置</h3>
-          <div className="flex gap-4 items-center text-sm text-gray-600">
-            <span>主题色调</span>
-            <div className="w-6 h-6 bg-primary rounded cursor-pointer ring-2 ring-offset-1 ring-primary"></div>
+          <div className="flex flex-col gap-4 text-sm text-gray-600">
+            <div className="flex items-center gap-4">
+              <span className="w-16">主题色调</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data.theme?.primaryColor || "#0ea5e9"}
+                  onChange={(e) =>
+                    handleThemeChange("primaryColor", e.target.value)
+                  }
+                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                />
+                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                  {data.theme?.primaryColor || "#0ea5e9"}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="w-16">高亮色</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={data.theme?.highlightColor || "#f0f9ff"}
+                  onChange={(e) =>
+                    handleThemeChange("highlightColor", e.target.value)
+                  }
+                  className="w-8 h-8 rounded cursor-pointer border-0 p-0"
+                />
+                <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+                  {data.theme?.highlightColor || "#f0f9ff"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

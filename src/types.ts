@@ -34,6 +34,11 @@ export interface Honor {
   name: string;
 }
 
+export interface ThemeConfig {
+  primaryColor: string;
+  highlightColor: string;
+}
+
 export interface ResumeData {
   basicInfo: {
     name: string;
@@ -46,6 +51,7 @@ export interface ResumeData {
   experiences: Experience[];
   projects: Project[];
   honors: Honor[];
+  theme: ThemeConfig;
 }
 
 export const defaultResumeData: ResumeData = {
@@ -131,4 +137,8 @@ export const defaultResumeData: ResumeData = {
       name: "全国大学生算法设计竞赛一等奖",
     },
   ],
+  theme: {
+    primaryColor: "#0ea5e9",
+    highlightColor: "#f0f9ff",
+  },
 };
