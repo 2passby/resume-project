@@ -27,7 +27,11 @@ export function SectionTitle({
       : "text-[12px] uppercase tracking-wider text-slate-400";
 
   return (
-    <div className={wrapperClassName}>
+    <div
+      data-page-block="heading"
+      className={wrapperClassName}
+      style={{ breakAfter: "avoid-page", pageBreakAfter: "avoid" }}
+    >
       <h2 className={titleClassName}>{title}</h2>
       <span className={subtitleClassName}>{subtitle}</span>
     </div>

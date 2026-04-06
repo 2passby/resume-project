@@ -11,6 +11,7 @@ const STORAGE_KEY = "resume_data";
 const MIN_PREVIEW_SCALE = 0.6;
 const MAX_PREVIEW_SCALE = 1.0;
 const PREVIEW_SCALE_STEP = 0.1;
+const PREVIEW_PAGE_HEIGHT = 1131;
 const PRINT_FONT_FAMILY =
   '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif';
 const PRINT_PAGE_STYLE = `
@@ -33,6 +34,71 @@ const PRINT_PAGE_STYLE = `
   }
 `;
 
+function getPreviewPageOffsets(root: HTMLDivElement) {
+  const blocks = Array.from(
+    root.querySelectorAll<HTMLElement>("[data-page-block]")
+  );
+
+  if (blocks.length === 0) {
+    const totalHeight = root.scrollHeight;
+    const offsets = [0];
+
+    while (totalHeight - offsets[offsets.length - 1] > PREVIEW_PAGE_HEIGHT) {
+      offsets.push(offsets[offsets.length - 1] + PREVIEW_PAGE_HEIGHT);
+    }
+
+    return offsets;
+  }
+
+  const rootRect = root.getBoundingClientRect();
+  const totalHeight = root.scrollHeight;
+  const offsets = [0];
+  let currentPageStart = 0;
+  let pendingHeadingTop: number | null = null;
+
+  const pushOffset = (nextOffset: number) => {
+    const normalizedOffset = Math.round(nextOffset);
+
+    if (normalizedOffset <= currentPageStart) {
+      return;
+    }
+
+    offsets.push(normalizedOffset);
+    currentPageStart = normalizedOffset;
+  };
+
+  for (const block of blocks) {
+    const blockRect = block.getBoundingClientRect();
+    const blockTop = blockRect.top - rootRect.top;
+    const blockBottom = blockTop + blockRect.height;
+    const blockType = block.dataset.pageBlock;
+
+    if (blockType === "heading") {
+      pendingHeadingTop = blockTop;
+      continue;
+    }
+
+    if (
+      blockRect.height < PREVIEW_PAGE_HEIGHT &&
+      blockBottom - currentPageStart > PREVIEW_PAGE_HEIGHT
+    ) {
+      pushOffset(
+        pendingHeadingTop !== null && pendingHeadingTop > currentPageStart
+          ? pendingHeadingTop
+          : blockTop
+      );
+    }
+
+    pendingHeadingTop = null;
+  }
+
+  while (totalHeight - currentPageStart > PREVIEW_PAGE_HEIGHT) {
+    pushOffset(currentPageStart + PREVIEW_PAGE_HEIGHT);
+  }
+
+  return offsets;
+}
+
 function App() {
   const [data, setData] = useState<ResumeData>(() => {
     const savedData = storage.get<ResumeData>(STORAGE_KEY, defaultResumeData);
@@ -50,8 +116,17 @@ function App() {
   });
   const componentRef = useRef<HTMLDivElement>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [pageOffsets, setPageOffsets] = useState([0]);
+  const [contentHeight, setContentHeight] = useState(PREVIEW_PAGE_HEIGHT);
   const [previewScale, setPreviewScale] = useState(1);
+  const totalPages = pageOffsets.length;
+  const activePage = Math.min(currentPage, totalPages);
+  const activePageStart = pageOffsets[activePage - 1] ?? 0;
+  const activePageEnd = pageOffsets[activePage] ?? contentHeight;
+  const activePageContentHeight = Math.max(
+    0,
+    Math.min(PREVIEW_PAGE_HEIGHT, activePageEnd - activePageStart)
+  );
 
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
@@ -69,23 +144,43 @@ function App() {
   }, [data]);
 
   useEffect(() => {
-    if (!componentRef.current) return;
+    if (!componentRef.current) {
+      return;
+    }
 
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const height = entry.target.scrollHeight;
-        // A4 height is ~1131px. Add small buffer
-        const pages = Math.max(1, Math.ceil((height - 10) / 1131));
-        setTotalPages(pages);
-        if (currentPage > pages) {
-          setCurrentPage(pages);
-        }
-      }
+    const previewNode = componentRef.current;
+    const observedNodes = [
+      previewNode,
+      ...Array.from(
+        previewNode.querySelectorAll<HTMLElement>("[data-page-block]")
+      ),
+    ];
+    const updatePageOffsets = () => {
+      setContentHeight(previewNode.scrollHeight);
+      setPageOffsets(getPreviewPageOffsets(previewNode));
+    };
+    const observer = new ResizeObserver(() => {
+      updatePageOffsets();
     });
 
-    observer.observe(componentRef.current);
-    return () => observer.disconnect();
-  }, [currentPage]);
+    observedNodes.forEach((node) => observer.observe(node));
+    updatePageOffsets();
+
+    let isMounted = true;
+
+    if ("fonts" in document) {
+      document.fonts.ready.then(() => {
+        if (isMounted) {
+          updatePageOffsets();
+        }
+      });
+    }
+
+    return () => {
+      isMounted = false;
+      observer.disconnect();
+    };
+  }, [data]);
 
   const handleScaleChange = (direction: "in" | "out") => {
     setPreviewScale((prev) => {
@@ -139,14 +234,14 @@ function App() {
                 <div className="h-px w-full bg-slate-200" />
                 <button
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
+                  disabled={activePage === 1}
                   className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
                   title="上一页"
                 >
                   <ChevronUp size={24} />
                 </button>
                 <div className="flex flex-col items-center space-y-1 font-bold text-slate-700">
-                  <span className="text-lg">{currentPage}</span>
+                  <span className="text-lg">{activePage}</span>
                   <span className="w-full border-t border-slate-200 pt-1 text-center text-xs text-slate-400">
                     {totalPages}
                   </span>
@@ -155,7 +250,7 @@ function App() {
                   onClick={() =>
                     setCurrentPage((p) => Math.min(totalPages, p + 1))
                   }
-                  disabled={currentPage === totalPages}
+                  disabled={activePage === totalPages}
                   className="rounded-full border border-transparent p-2 text-primary transition-colors hover:border-primary/10 hover:bg-primary/10 disabled:opacity-50 disabled:hover:border-transparent disabled:hover:bg-transparent"
                   title="下一页"
                 >
@@ -171,12 +266,17 @@ function App() {
           >
             <div className="relative h-[1131px] w-[800px] overflow-hidden rounded-[28px] bg-white shadow-[0_32px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70">
               <div
-                style={{
-                  transform: `translateY(-${(currentPage - 1) * 1131}px)`,
-                  transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                }}
+                className="overflow-hidden"
+                style={{ height: `${activePageContentHeight}px` }}
               >
-                <Preview data={data} ref={componentRef} />
+                <div
+                  style={{
+                    transform: `translateY(-${activePageStart}px)`,
+                    transition: "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                  }}
+                >
+                  <Preview data={data} ref={componentRef} />
+                </div>
               </div>
             </div>
           </div>

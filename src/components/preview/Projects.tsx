@@ -42,7 +42,12 @@ export function Projects({
       <SectionTitle title={title} subtitle="PROJECTS" styleId={styleId} />
       <div className="space-y-5">
         {projects.map((proj) => (
-          <div key={proj.id} className="break-inside-avoid">
+          <div
+            key={proj.id}
+            data-page-block="avoid"
+            className="break-inside-avoid"
+            style={{ breakInside: "avoid-page", pageBreakInside: "avoid" }}
+          >
             <div className={headerClassName} style={headerStyle}>
               <span
                 className="text-[15px] font-bold"

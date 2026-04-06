@@ -23,7 +23,12 @@ export function Skills({ skills, title, isVisible, styleId }: SkillsProps) {
       <SectionTitle title={title} subtitle="TECH STACK" styleId={styleId} />
       <ul className={listClassName}>
         {skills.map((skill) => (
-          <li key={skill.id} className="flex items-start">
+          <li
+            key={skill.id}
+            data-page-block="avoid"
+            className="flex items-start"
+            style={{ breakInside: "avoid-page", pageBreakInside: "avoid" }}
+          >
             <span
               className="mr-2 text-[8px] mt-[6px]"
               style={{ color: "var(--color-primary)" }}
