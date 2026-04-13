@@ -39,6 +39,44 @@ interface SidebarProps {
   onExport: () => void;
 }
 
+interface SortableSectionProps {
+  id: string;
+  renderSection: (
+    id: string,
+    dragProps?: {
+      attributes: Record<string, unknown>;
+      listeners: Record<string, unknown>;
+    }
+  ) => React.ReactNode;
+}
+
+function SortableSection({ id, renderSection }: SortableSectionProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1 : 0,
+    position: "relative" as const,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {renderSection(id, {
+        attributes: attributes as unknown as Record<string, unknown>,
+        listeners: listeners as unknown as Record<string, unknown>,
+      })}
+    </div>
+  );
+}
+
 const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
@@ -1024,33 +1062,6 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
     }
   };
 
-  const SortableSection = ({ id }: { id: string }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id });
-
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-      zIndex: isDragging ? 1 : 0,
-      position: "relative" as const,
-    };
-
-    return (
-      <div ref={setNodeRef} style={style}>
-        {renderSection(id, {
-          attributes: attributes as unknown as Record<string, unknown>,
-          listeners: listeners as unknown as Record<string, unknown>,
-        })}
-      </div>
-    );
-  };
-
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-[34px] border border-white/70 bg-white/72 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl">
       <div className="sticky top-0 z-10 border-b border-white/70 bg-white/78 px-6 pb-5 pt-6 backdrop-blur-xl">
@@ -1314,7 +1325,11 @@ const Sidebar: React.FC<SidebarProps> = ({ data, setData, onExport }) => {
             strategy={verticalListSortingStrategy}
           >
             {data.sectionOrder.map((id) => (
-              <SortableSection key={id} id={id} />
+              <SortableSection
+                key={id}
+                id={id}
+                renderSection={renderSection}
+              />
             ))}
           </SortableContext>
         </DndContext>
